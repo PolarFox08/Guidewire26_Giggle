@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+.venv311/
+env/
+ENV/
+
+# Environment variables - NEVER commit
+backend/.env
+
+# Keep .env.example - it must be committed
+!backend/.env.example
+
+# ML model artifacts - handled by Git LFS
+*.joblib
+*.pt
+*.pkl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
