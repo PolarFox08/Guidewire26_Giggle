@@ -1,4 +1,4 @@
-# GigShield
+# Giggle
 
 ## AI-Powered Parametric Income Insurance for India's Gig Economy
 
@@ -11,8 +11,8 @@
 ## Table of Contents
 
 - [The Problem We're Solving](#the-problem-were-solving)
-- [What GigShield Is](#what-gigshield-is)
-- [What Makes GigShield Different](#what-makes-gigshield-different)
+- [What giggle Is](#what-giggle-is)
+- [What Makes giggle Different](#what-makes-giggle-different)
 - [Persona: Priya, Zomato Delivery Partner, Velachery, Chennai](#persona-priya-zomato-delivery-partner-velachery-chennai)
 - [Application Workflow](#application-workflow)
 - [Weekly Premium Model](#weekly-premium-model)
@@ -37,23 +37,23 @@ India's 15 million+ platform delivery workers are the last mile of the digital e
 
 The problem is not just income loss. It is **how income is structured**. Platform base rates have fallen from ₹40–45/order to ₹15–20/order. Slab bonuses — ₹50 at 7 deliveries, ₹120 at 12, ₹150 at 15, ₹200 at 21+ per day — now constitute a larger fraction of total earnings than base pay. A rain disruption that stops a worker at delivery 10 doesn't just cost 10 deliveries of base pay. It costs the ₹120 slab bonus they were 2 orders away from. **No existing insurance product addresses this.** Not SEWA. Not MIC Global. Not any insurtech in India.
 
-SEWA's 2023 parametric pilot — the only documented attempt — **triggered zero payouts** because city-level IMD weather station data failed to capture hyperlocal conditions. Workers enrolled, paid premiums, and received nothing during the monsoon that should have covered them. GigShield's architecture is built specifically to solve the failure modes SEWA documented.
+SEWA's 2023 parametric pilot — the only documented attempt — **triggered zero payouts** because city-level IMD weather station data failed to capture hyperlocal conditions. Workers enrolled, paid premiums, and received nothing during the monsoon that should have covered them. giggle's architecture is built specifically to solve the failure modes SEWA documented.
 
 ---
 
-## What GigShield Is
+## What giggle Is
 
-GigShield is a parametric income insurance platform for food delivery workers. When an external disruption — heavy rain, extreme heat, severe pollution, or zone curfew — makes delivery work physically impossible, GigShield detects it automatically, computes the worker's true income loss (including the slab bonus they missed), validates the claim against a multi-layer fraud engine, and deposits the payout to their UPI account within 60 seconds. No claim forms. No calls. No waiting.
+giggle is a parametric income insurance platform for food delivery workers. When an external disruption — heavy rain, extreme heat, severe pollution, or zone curfew — makes delivery work physically impossible, giggle detects it automatically, computes the worker's true income loss (including the slab bonus they missed), validates the claim against a multi-layer fraud engine, and deposits the payout to their UPI account within 60 seconds. No claim forms. No calls. No waiting.
 
 **The worker does nothing. The system does everything.**
 
-## What Makes GigShield Different
+## What Makes giggle Different
 
-- **Slab-aware payout computation** — the world's first parametric insurance product that models India's platform incentive slab structure. A disruption at delivery 10 costs the ₹120 slab bonus the worker was 2 orders away from. Every existing product ignores this. GigShield computes it.
-- **SEWA's 2023 failure, directly fixed** — SEWA's parametric pilot triggered zero payouts because city-level IMD data missed hyperlocal conditions. GigShield queries Open-Meteo at 3 geographic points per zone (centroid + 2 offsets) and takes the maximum reading, expanding spatial coverage to the worker's actual 5–8km delivery radius.
+- **Slab-aware payout computation** — the world's first parametric insurance product that models India's platform incentive slab structure. A disruption at delivery 10 costs the ₹120 slab bonus the worker was 2 orders away from. Every existing product ignores this. giggle computes it.
+- **SEWA's 2023 failure, directly fixed** — SEWA's parametric pilot triggered zero payouts because city-level IMD data missed hyperlocal conditions. giggle queries Open-Meteo at 3 geographic points per zone (centroid + 2 offsets) and takes the maximum reading, expanding spatial coverage to the worker's actual 5–8km delivery radius.
 - **2-of-3 source corroboration** — no single weather station controls a payout. Environmental data, geospatial flood zone activation, and platform zone suspension must independently confirm before a claim fires. Eliminates both false positives and the single-point failure that collapsed SEWA's pilot.
 - **Isolation Forest + CBLOF fraud ensemble** — CBLOF outperforms Isolation Forest on spatially consistent fraud patterns (silhouette 0.114 vs 0.103, Springer Nature 2025). Running both with max-score output catches ring fraud that either model misses alone.
-- **Multilingual-first UX with SHAP explanations in vernacular** — every premium change explained in the worker's primary language. GigShield is architected for full regional language support; MVP launches with Hindi and Tamil, covering the two largest delivery-worker language groups. Onboarding, coverage status, and payout notifications all render in the worker's selected language. Without this, enrollment fails regardless of backend sophistication.
+- **Multilingual-first UX with SHAP explanations in vernacular** — every premium change explained in the worker's primary language. giggle is architected for full regional language support; MVP launches with Hindi and Tamil, covering the two largest delivery-worker language groups. Onboarding, coverage status, and payout notifications all render in the worker's selected language. Without this, enrollment fails regardless of backend sophistication.
 
 ---
 
@@ -66,7 +66,7 @@ GigShield is a parametric income insurance platform for food delivery workers. W
 - Cyclone Michaung (December 2023): 500mm in one day. Velachery was impassable for 3–5 days. Priya lost ₹3,300–₹4,400 in one event with zero compensation.
 - On a rain surge day when Zomato offers ₹20 extra per order, Priya loses not just base income — she loses the peak earning opportunity. Her actual loss on a flooded rain day is 40–60% above her average daily baseline.
 
-**What Priya needs from GigShield:**
+**What Priya needs from giggle:**
 - A weekly premium she can afford (under ₹100/week, below 2.5% of her weekly income).
 - Automatic payout she doesn't have to chase.
 - An app in her primary language (Tamil for Chennai; Hindi for northern metros) that explains her premium and coverage in plain terms.
@@ -79,7 +79,7 @@ GigShield is a parametric income insurance platform for food delivery workers. W
 ### Onboarding Flow
 
 ```
-Worker opens GigShield app (language auto-selected: Hindi or Tamil based on device locale; MVP supports both)
+Worker opens giggle app (language auto-selected: Hindi or Tamil based on device locale; MVP supports both)
         ↓
 Aadhaar OTP verification (Gridlines API)
         ↓
@@ -261,7 +261,7 @@ Hindi example:
 **Data source:** Open-Meteo temperature_2m field  
 **IMD threshold:** >45°C for 4+ consecutive hours (Severe Heatwave, IMD classification)  
 **Trigger weight:** 0.10 independent weight in the composite score, replacing the AQI weight when heat is the active trigger. On a pure heat day: platform suspension (0.40) + rainfall (0.35) + GIS zone (0.15) + heat (0.10) = 1.00. Heat and AQI do not fire simultaneously in the same composite evaluation — whichever is active takes the 0.10 slot. On a pure heat day with no rainfall, the rainfall component contributes zero but the 0.10 heat signal can still contribute toward corroboration alongside platform suspension and GIS zone activation.  
-**Deployment relevance:** April–June heat season across all Indian metros. SEWA's validated trigger type — GigShield uses the official IMD severe heatwave threshold (45°C) rather than SEWA's initial miscalibrated version.
+**Deployment relevance:** April–June heat season across all Indian metros. SEWA's validated trigger type — giggle uses the official IMD severe heatwave threshold (45°C) rather than SEWA's initial miscalibrated version.
 
 ### 2-of-3 Corroboration Gate
 
@@ -306,7 +306,7 @@ No single source triggers a payout. At least 2 of 3 independent source categorie
 ### Model M6 — Slab Probability Estimator
 - **Type:** Non-parametric conditional frequency query (SQL, no ML library)
 - **Purpose:** Compute P(slab_missed | deliveries_completed_today, day_of_week, time_slot) from worker's own 30-day history
-- **Innovation:** This is GigShield's most novel feature. Zomato's step-function slab bonuses (₹50@7, ₹120@12, ₹150@15, ₹200@21+) are the dominant income component at current base rates. No existing insurance product models slab loss. GigShield computes the actuarially honest counterfactual income loss including the slab the worker was tracking toward.
+- **Innovation:** This is giggle's most novel feature. Zomato's step-function slab bonuses (₹50@7, ₹120@12, ₹150@15, ₹200@21+) are the dominant income component at current base rates. No existing insurance product models slab loss. giggle computes the actuarially honest counterfactual income loss including the slab the worker was tracking toward.
 
 ### Models M7–M9 — Deterministic Behavioral Signals
 - **M7 Activity Consistency Scorer:** Rolling std dev of 8-week delivery counts, normalized. LightGBM feature + fraud ensemble input. From UBI behavioral pricing research.
@@ -328,7 +328,7 @@ The delivery worker persona is mobile-first. Workers manage their entire work li
 **Insurer/admin-facing: React.js (Vite)**  
 The loss ratio monitor, disruption heatmap, fraud flag queue, and predictive claims forecast are data-dense web dashboards designed for desktop use by insurance professionals. A mobile app is the wrong medium for these tools. React.js shares component patterns and type definitions with the React Native worker app, enabling code reuse across both interfaces.
 
-**Language:** GigShield is architected for multilingual support from day one. The MVP launches with **Hindi and Tamil** — Hindi as the primary language covering the largest delivery-worker population across northern metros, Tamil for the initial Chennai deployment. react-i18next manages string loading from locale files (hi.json, ta.json, en.json). Language is auto-detected from device locale on first launch and can be changed in-app at any time. Post-MVP expansion (Telugu, Kannada, Bengali, Marathi) requires only adding a new locale JSON file — no UI code changes.
+**Language:** giggle is architected for multilingual support from day one. The MVP launches with **Hindi and Tamil** — Hindi as the primary language covering the largest delivery-worker population across northern metros, Tamil for the initial Chennai deployment. react-i18next manages string loading from locale files (hi.json, ta.json, en.json). Language is auto-detected from device locale on first launch and can be changed in-app at any time. Post-MVP expansion (Telugu, Kannada, Bengali, Marathi) requires only adding a new locale JSON file — no UI code changes.
 
 ---
 
@@ -568,7 +568,7 @@ Day 23–25: Final Pitch Deck (PDF)
   - Slide structure:
     1. The Problem: Priya's rain day (income loss is slab loss, not just base loss)
     2. SEWA's Failure & What We Fixed
-    3. GigShield: How It Works (trigger → payout flow diagram)
+    3. giggle: How It Works (trigger → payout flow diagram)
     4. The Slab Innovation (the feature no competitor has)
     5. AI & Fraud Architecture (M1–M10 model inventory visual)
     6. Tech Stack (single PostgreSQL engine + 3 extensions)
@@ -590,7 +590,7 @@ Day 25–27: Final QA + submission package
 
 ## Competitive Differentiation
 
-| Dimension | GigShield | SEWA 2023 | MIC Global (India) | Any Vibe-Coded Team |
+| Dimension | giggle | SEWA 2023 | MIC Global (India) | Any Vibe-Coded Team |
 |---|---|---|---|---|
 | Weather granularity | 1km + 3-point oversampling | City-level → **zero payouts** | Country aggregates | City-level API call |
 | Payout model | Slab-aware (base + delta + monthly) | Flat ₹151–₹1,651 | Flat "inconvenience payment" | Flat amount |
@@ -640,7 +640,7 @@ Day 25–27: Final QA + submission package
 ## Repository Structure
 
 ```
-gigshield/
+giggle/
 ├── backend/
 │   ├── app/
 │   │   ├── api/               # FastAPI routers (onboarding, premium, claims, payout, admin)
@@ -673,8 +673,8 @@ gigshield/
 
 ```bash
 # Clone repository
-git clone https://github.com/[team]/gigshield.git
-cd gigshield
+git clone https://github.com/[team]/giggle.git
+cd giggle
 
 # Start all services
 docker compose up --build
@@ -703,7 +703,7 @@ cd admin-dashboard && npm run dev
 
 ## Scope Boundaries (Per Hackathon Golden Rules)
 
-GigShield covers **income loss from external disruptions only.**
+giggle covers **income loss from external disruptions only.**
 
 Explicitly excluded:
 - Health insurance or hospitalisation claims
@@ -737,4 +737,4 @@ All design decisions in this README are grounded in documented evidence:
 
 ---
 
-*GigShield — Built for Priya. Deployed for 15 million workers like her.*
+*giggle — Built for Priya. Deployed for 15 million workers like her.*
