@@ -19,9 +19,9 @@ backend/.env
 !backend/.env.example
 
 # ML model artifacts - handled by Git LFS
-*.joblib
-*.pt
-*.pkl
+# *.joblib
+# *.pt
+# *.pkl
 
 # IDE
 .vscode/
