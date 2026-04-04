@@ -18,19 +18,23 @@ class Settings(BaseSettings):
     """
 
     # Database Configuration
-    database_url: str
+    database_url: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
     """PostgreSQL connection string for Supabase with PostGIS and TimescaleDB"""
 
     # Cache & Message Broker
-    redis_url: str
+    redis_url: str = "redis://localhost:6379/0"
     """Redis connection URL for Celery broker (rediss:// for TLS on Upstash)"""
 
     # Payment Gateway
-    razorpay_key_id: str
+    razorpay_key_id: str = "rzp_test_placeholder"
     """Razorpay test mode API Key ID (starts with rzp_test_)"""
     
-    razorpay_key_secret: str
+    razorpay_key_secret: str = "test_secret_placeholder"
     """Razorpay test mode API Key Secret"""
+
+    # Admin Security
+    admin_key: str = ""
+    """Admin API key used for privileged endpoints"""
 
     # Weather & Environmental Data
     open_meteo_base_url: str = "https://api.open-meteo.com/v1"
@@ -40,7 +44,7 @@ class Settings(BaseSettings):
     """Open-Meteo Historical Archive API base URL (training data, 80-year rainfall)"""
 
     # AQI Monitoring
-    data_gov_in_api_key: str
+    data_gov_in_api_key: str = "test_data_gov_in_api_key"
     """API key for data.gov.in CPCB NAMP AQI queries"""
 
     # Push Notifications (Phase 3)

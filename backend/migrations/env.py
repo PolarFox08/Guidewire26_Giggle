@@ -13,6 +13,7 @@ from app.core.database import DeclarativeBase
 from app.models.audit import AuditEvent  # noqa: F401
 from app.models.claims import Claim  # noqa: F401
 from app.models.delivery import DeliveryHistory  # noqa: F401
+from app.models.platform_partner import PlatformPartner  # noqa: F401
 from app.models.payout import PayoutEvent  # noqa: F401
 from app.models.policy import Policy  # noqa: F401
 from app.models.slab import SlabConfig  # noqa: F401

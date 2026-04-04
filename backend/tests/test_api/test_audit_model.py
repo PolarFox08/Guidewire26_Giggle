@@ -31,3 +31,20 @@ def test_audit_event_defaults_and_listener():
     assert columns["actor"].default is not None
     assert columns["created_at"].server_default is not None
     assert event.contains(AuditEvent, "before_update", prevent_audit_event_update)
+
+
+def test_audit_event_before_update_listener_raises_runtime_error():
+    event_instance = AuditEvent(
+        event_type="test_event",
+        entity_id="00000000-0000-0000-0000-000000000001",
+        entity_type="worker",
+        payload={"ok": True},
+    )
+
+    try:
+        prevent_audit_event_update(None, None, event_instance)
+    except RuntimeError as exc:
+        assert "append-only" in str(exc)
+        assert "UPDATE operations" in str(exc)
+    else:
+        raise AssertionError("Expected RuntimeError to be raised")
