@@ -1,0 +1,49 @@
+﻿python : C:\Users\us\AppD
+ata\Local\Programs\Python
+\Python313\Lib\site-packa
+ges\sklearn\base.py:442: 
+InconsistentVersionWarnin
+g: Trying to unpickle 
+estimator LabelEncoder 
+from version 1.8.0 when 
+using version 1.7.2. 
+This might lead to 
+breaking code or invalid 
+results. Use at your own 
+risk. For more info 
+please refer to:
+At line:1 char:1
++ python -c "import 
+logging; import joblib; 
+import app.ml.inference 
+as  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo       
+       : NotSpecified:   
+  (C:\Users\us\App...l   
+ ease refer to::Strin    
+g) [], RemoteExcepti    
+on
+    + FullyQualifiedErro 
+   rId : NativeCommandE  
+  rror
+ 
+https://scikit-learn.org/
+stable/model_persistence.
+html#security-maintainabi
+lity-limitations
+  warnings.warn(
+Error loading C:\Users\us
+\OneDrive\Desktop\Giggle\
+backend\app\ml\artifacts\
+glm_m1.joblib: (<StringDt
+ype(storage='python', 
+na_value=nan)>, 
+array(['const', 'flood_ha
+zard_zone_tier', 
+'season_flag', 
+'platform'],
+      dtype=object))
+Hello

@@ -1,0 +1,60 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.2, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\us\AppData\Local\Programs\Python\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\us\OneDrive\Desktop\Giggle\backend
+plugins: anyio-4.8.0, asyncio-0.23.8, cov-5.0.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 12 items
+
+tests/test_ml/test_models.py::test_glm_used_for_week_3 FAILED            [  8%]
+tests/test_ml/test_models.py::test_lgbm_used_for_week_6 PASSED           [ 16%]
+tests/test_ml/test_models.py::test_recency_multiplier_week_1 PASSED      [ 25%]
+tests/test_ml/test_models.py::test_recency_multiplier_week_3 PASSED      [ 33%]
+tests/test_ml/test_models.py::test_recency_multiplier_week_5 PASSED      [ 41%]
+tests/test_ml/test_models.py::test_affordability_cap_applied PASSED      [ 50%]
+tests/test_ml/test_models.py::test_premium_within_bounds_random PASSED   [ 58%]
+tests/test_ml/test_models.py::test_shap_empty_for_glm PASSED             [ 66%]
+tests/test_ml/test_models.py::test_shap_three_items_for_lgbm PASSED      [ 75%]
+tests/test_ml/test_models.py::test_csv_data_validation SKIPPED (CSV ...) [ 83%]
+tests/test_ml/test_models.py::test_real_glm_loaded_if_artifacts_exist FAILED [ 91%]
+tests/test_ml/test_models.py::test_real_lgbm_loaded_if_artifacts_exist PASSED [100%]
+
+================================== FAILURES ===================================
+__________________________ test_glm_used_for_week_3 ___________________________
+
+    def test_glm_used_for_week_3():
+        result = calculate_premium(**base_kwargs(enrollment_week=3))
+>       assert result["model_used"] == "glm"
+E       AssertionError: assert 'stub' == 'glm'
+E         
+E         - glm
+E         + stub
+
+tests\test_ml\test_models.py:28: AssertionError
+___________________ test_real_glm_loaded_if_artifacts_exist ___________________
+
+    def test_real_glm_loaded_if_artifacts_exist():
+        """If glm_m1.joblib exists, model_used should be 'glm' not 'stub'"""
+        import os
+        artifact_path = os.path.join(os.path.dirname(__file__), "../../app/ml/artifacts/glm_m1.joblib")
+        if not os.path.exists(artifact_path):
+            pytest.skip("glm_m1.joblib not present")
+        result = calculate_premium(**base_kwargs(enrollment_week=3))
+>       assert result["model_used"] == "glm"
+E       AssertionError: assert 'stub' == 'glm'
+E         
+E         - glm
+E         + stub
+
+tests\test_ml\test_models.py:96: AssertionError
+============================== warnings summary ===============================
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\site-packages\sklearn\base.py:442
+  C:\Users\us\AppData\Local\Programs\Python\Python313\Lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator LabelEncoder from version 1.8.0 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+  https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_ml/test_models.py::test_glm_used_for_week_3 - AssertionErro...
+FAILED tests/test_ml/test_models.py::test_real_glm_loaded_if_artifacts_exist
+============== 2 failed, 9 passed, 1 skipped, 1 warning in 4.74s ==============

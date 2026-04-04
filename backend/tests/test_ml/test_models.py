@@ -84,3 +84,25 @@ def test_csv_data_validation():
     assert df["weekly_premium"].notnull().all()
     assert (df["weekly_premium"] >= 49.0).all()
     assert (df["weekly_premium"] <= 149.0).all()
+
+
+def test_real_glm_loaded_if_artifacts_exist():
+    """If glm_m1.joblib exists, model_used should be 'glm' not 'stub'"""
+    import os
+    artifact_path = os.path.join(os.path.dirname(__file__), "../../app/ml/artifacts/glm_m1.joblib")
+    if not os.path.exists(artifact_path):
+        pytest.skip("glm_m1.joblib not present")
+    result = calculate_premium(**base_kwargs(enrollment_week=3))
+    assert result["model_used"] == "glm"
+
+def test_real_lgbm_loaded_if_artifacts_exist():
+    """If lgbm_m2.joblib exists, model_used should be 'lgbm' not 'stub'"""
+    import os
+    artifact_path = os.path.join(os.path.dirname(__file__), "../../app/ml/artifacts/lgbm_m2.joblib")
+    if not os.path.exists(artifact_path):
+        pytest.skip("lgbm_m2.joblib not present")
+    result = calculate_premium(**base_kwargs(enrollment_week=6))
+    assert result["model_used"] == "lgbm"
+    assert len(result["shap_top3"]) == 3
+    for s in result["shap_top3"]:
+        assert len(s) > 0

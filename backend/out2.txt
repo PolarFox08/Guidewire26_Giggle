@@ -1,0 +1,56 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.2, pytest-8.2.2, pluggy-1.6.0 -- C:\Users\us\AppData\Local\Programs\Python\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\us\OneDrive\Desktop\Giggle\backend
+plugins: anyio-4.8.0, asyncio-0.23.8, cov-5.0.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 18 items
+
+tests/test_ml/test_models.py::test_glm_used_for_week_3 PASSED            [  5%]
+tests/test_ml/test_models.py::test_lgbm_used_for_week_6 PASSED           [ 11%]
+tests/test_ml/test_models.py::test_recency_multiplier_week_1 PASSED      [ 16%]
+tests/test_ml/test_models.py::test_recency_multiplier_week_3 PASSED      [ 22%]
+tests/test_ml/test_models.py::test_recency_multiplier_week_5 PASSED      [ 27%]
+tests/test_ml/test_models.py::test_affordability_cap_applied PASSED      [ 33%]
+tests/test_ml/test_models.py::test_premium_within_bounds_random PASSED   [ 38%]
+tests/test_ml/test_models.py::test_shap_empty_for_glm PASSED             [ 44%]
+tests/test_ml/test_models.py::test_shap_three_items_for_lgbm PASSED      [ 50%]
+tests/test_ml/test_models.py::test_csv_data_validation SKIPPED (CSV ...) [ 55%]
+tests/test_ml/test_models.py::test_real_glm_loaded_if_artifacts_exist PASSED [ 61%]
+tests/test_ml/test_models.py::test_real_lgbm_loaded_if_artifacts_exist PASSED [ 66%]
+tests/test_premium/test_api.py::test_calculate_valid_worker PASSED       [ 72%]
+tests/test_premium/test_api.py::test_calculate_unknown_worker PASSED     [ 77%]
+tests/test_premium/test_api.py::test_calculate_no_policy PASSED          [ 83%]
+tests/test_premium/test_api.py::test_history_valid_worker PASSED         [ 88%]
+tests/test_premium/test_api.py::test_history_unknown_worker PASSED       [ 94%]
+tests/test_premium/test_api.py::test_renew_valid_worker PASSED           [100%]
+
+============================== warnings summary ===============================
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\site-packages\sklearn\base.py:442
+  C:\Users\us\AppData\Local\Programs\Python\Python313\Lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator LabelEncoder from version 1.8.0 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+  https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+    warnings.warn(
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\formparsers.py:12
+  C:\Users\us\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\site-packages\pydantic\_internal\_config.py:295
+  C:\Users\us\AppData\Local\Programs\Python\Python313\Lib\site-packages\pydantic\_internal\_config.py:295: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.10/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\applications.py:1051
+  C:\Users\us\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\applications.py:1051: PytestCollectionWarning: cannot collect 'test_app' because it is not a function.
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.13.2-final-0 -----------
+Name                  Stmts   Miss  Cover   Missing
+---------------------------------------------------
+app\api\premium.py      106     24    77%   28, 30, 34, 75-81, 113-115, 151-153, 164, 171, 196, 201-203, 233-237
+app\ml\inference.py      76     13    83%   13-14, 44, 48-59, 67, 80, 93-95
+---------------------------------------------------
+TOTAL                   182     37    80%
+
+================== 17 passed, 1 skipped, 4 warnings in 7.70s ==================
