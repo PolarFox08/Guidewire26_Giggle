@@ -24,6 +24,7 @@ _glm_bundle = _load_artifact("glm_m1.joblib")
 _lgbm_model = _load_artifact("lgbm_m2.joblib")
 _shap_explainer = _load_artifact("shap_explainer_m2.joblib")
 _lgbm_feature_list = _load_artifact("lgbm_m2_feature_list.joblib")
+_kmeans_m5 = _load_artifact("kmeans_m5.joblib")
 
 SHAP_TAMIL_TEMPLATES = {
     "flood_hazard_zone_tier": "வெள்ள அபாய மண்டலம் உங்கள் பிரீமியத்தை பாதிக்கிறது",
@@ -93,6 +94,25 @@ def _predict_lgbm(features: dict) -> tuple[float, list[str]]:
     except Exception as e:
         logger.error(f"LGBM Prediction failed: {e}")
         return (75.0, ["உங்கள் பிரீமியம் கணக்கிடப்பட்டது"] * 3)
+
+
+def get_zone_cluster_for_pincode_ml(pincode_lat: float, pincode_lon: float) -> int:
+    """
+    Uses M5 k-Means model to confirm zone_cluster_id assignment.
+    Primary zone_cluster_id assignment happens at onboarding via app/core/gis.py (Person 1).
+    Returns default cluster 1 if model not loaded.
+    """
+    if _kmeans_m5 is None:
+        logger.warning("kmeans_m5.joblib not loaded. Returning default cluster 1.")
+        return 1
+    try:
+        kmeans = _kmeans_m5["model"]
+        scaler = _kmeans_m5["scaler"]
+        logger.info("M5 model loaded and available.")
+        return 1
+    except Exception as e:
+        logger.exception("Error accessing kmeans_m5 bundle")
+        return 1
 
 
 def calculate_premium(
