@@ -632,4 +632,89 @@ def get_model_health(
     )
 
 
+class EnrollmentMetricsResponse(BaseModel):
+    total_enrolled: int
+    active_workers: int
+    lapsed_workers: int
+    lapse_rate: float | None
+    enrollments_last_7d: int
+    enrollments_last_30d: int
+    enrollment_spike_alert: bool
+    adverse_selection_alert: bool
+    avg_enrollment_week: float | None
+    high_tier_fraction: float | None
+
+
+@router.get("/enrollment-metrics", response_model=EnrollmentMetricsResponse)
+def get_enrollment_metrics(
+    _admin: None = Depends(_require_admin_key),
+    db: Session = Depends(get_db),
+) -> EnrollmentMetricsResponse:
+    """
+    Return enrollment spikes, lapse rate, and adverse selection indicators.
+
+    enrollment_spike_alert: True if enrollments in last 7 days > 3× 30-day weekly average.
+    adverse_selection_alert: True if >40% of recent enrollments are in high flood-tier zones.
+    """
+    now_utc = datetime.now(timezone.utc)
+    last_7d = now_utc - timedelta(days=7)
+    last_30d = now_utc - timedelta(days=30)
+
+    metrics_sql = text(
+        """
+        SELECT
+            COUNT(*) AS total_enrolled,
+            COUNT(CASE WHEN is_active = TRUE THEN 1 END) AS active_workers,
+            COUNT(CASE WHEN is_active = FALSE THEN 1 END) AS lapsed_workers,
+            COUNT(CASE WHEN created_at >= :last_7d THEN 1 END) AS enrollments_last_7d,
+            COUNT(CASE WHEN created_at >= :last_30d THEN 1 END) AS enrollments_last_30d,
+            AVG(enrollment_week) AS avg_enrollment_week,
+            CASE
+                WHEN COUNT(*) > 0
+                THEN COUNT(CASE WHEN flood_hazard_tier = 'high' AND created_at >= :last_30d THEN 1 END)::float
+                     / NULLIF(COUNT(CASE WHEN created_at >= :last_30d THEN 1 END), 0)
+                ELSE NULL
+            END AS high_tier_fraction_recent
+        FROM worker_profiles
+        """
+    )
+
+    row = db.execute(metrics_sql, {"last_7d": last_7d, "last_30d": last_30d}).mappings().one()
+
+    total_enrolled = int(row["total_enrolled"] or 0)
+    active_workers = int(row["active_workers"] or 0)
+    lapsed_workers = int(row["lapsed_workers"] or 0)
+    enrollments_last_7d = int(row["enrollments_last_7d"] or 0)
+    enrollments_last_30d = int(row["enrollments_last_30d"] or 0)
+    avg_enrollment_week = float(row["avg_enrollment_week"]) if row["avg_enrollment_week"] is not None else None
+    high_tier_fraction = float(row["high_tier_fraction_recent"]) if row["high_tier_fraction_recent"] is not None else None
+
+    lapse_rate = (
+        round(lapsed_workers / total_enrolled, 4)
+        if total_enrolled > 0
+        else None
+    )
+
+    # Spike alert: last-7d enrollments > 3× weekly average over last 30d
+    weekly_avg_30d = enrollments_last_30d / 4.33
+    enrollment_spike_alert = enrollments_last_7d > (weekly_avg_30d * 3) if weekly_avg_30d > 0 else False
+
+    # Adverse selection: >40% of recent enrollees in high flood-tier (pre-monsoon clustering)
+    adverse_selection_alert = (high_tier_fraction is not None and high_tier_fraction > 0.40)
+
+    return EnrollmentMetricsResponse(
+        total_enrolled=total_enrolled,
+        active_workers=active_workers,
+        lapsed_workers=lapsed_workers,
+        lapse_rate=lapse_rate,
+        enrollments_last_7d=enrollments_last_7d,
+        enrollments_last_30d=enrollments_last_30d,
+        enrollment_spike_alert=enrollment_spike_alert,
+        adverse_selection_alert=adverse_selection_alert,
+        avg_enrollment_week=avg_enrollment_week,
+        high_tier_fraction=high_tier_fraction,
+    )
+
+
+
 

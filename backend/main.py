@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
@@ -13,9 +13,12 @@ except ModuleNotFoundError:  # pragma: no cover - optional test dependency
 
 from app.api.fraud import router as fraud_router
 from app.api.admin import router as admin_router
+from app.api.claims import router as claims_router
 from app.api.onboarding import router as onboarding_router
+from app.api.payout import router as payout_router
 from app.api.policy import router as policy_router
 from app.api.premium import router as premium_router
+from app.api.trigger import router as trigger_router
 from app.core.config import settings
 from app.core.database import engine
 from app.fraud import scorer as fraud_scorer
@@ -28,20 +31,6 @@ app = FastAPI(
     version="0.2.0",
 )
 
-
-def _build_placeholder_router(prefix: str, tag: str) -> APIRouter:
-    router = APIRouter(prefix=prefix, tags=[tag])
-
-    @router.get("/", status_code=501, summary="TODO")
-    def not_implemented() -> dict[str, str]:
-        return {"detail": f"{tag} router is not implemented yet"}
-
-    return router
-
-
-trigger_router = _build_placeholder_router("/api/v1/trigger", "trigger")
-claims_router = _build_placeholder_router("/api/v1/claims", "claims")
-payout_router = _build_placeholder_router("/api/v1/payout", "payout")
 
 app.include_router(onboarding_router)
 app.include_router(policy_router)

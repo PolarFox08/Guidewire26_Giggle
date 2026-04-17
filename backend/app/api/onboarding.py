@@ -332,3 +332,61 @@ def register_worker(
         coverage_start=None,
         days_until_eligible=28,
     )
+
+
+class OnboardingStatusResponse(BaseModel):
+    worker_id: UUID
+    policy_id: UUID
+    registration_complete: bool
+    policy_status: str
+    days_since_enrollment: int
+    days_until_claim_eligible: int
+    is_coverage_active: bool
+    waiting_period_days: int
+    enrollment_date: datetime
+
+
+@router.get("/status/{worker_id}", response_model=OnboardingStatusResponse)
+def get_onboarding_status(
+    worker_id: UUID,
+    db: Session = Depends(get_db),
+) -> OnboardingStatusResponse:
+    """Return registration and waiting period status for a worker."""
+    worker = db.query(WorkerProfile).filter_by(id=worker_id).first()
+    if worker is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Worker not found",
+        )
+
+    policy = db.query(Policy).filter_by(worker_id=worker_id).first()
+    if policy is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Policy not found for worker",
+        )
+
+    now_utc = datetime.now(timezone.utc)
+    enrollment_date = worker.enrollment_date
+    if enrollment_date.tzinfo is None:
+        enrollment_date = enrollment_date.replace(tzinfo=timezone.utc)
+
+    days_since_enrollment = (now_utc - enrollment_date).days
+    waiting_period_days = 28
+    days_until_eligible = max(0, waiting_period_days - days_since_enrollment)
+    is_coverage_active = (
+        policy.status == "active" and days_until_eligible == 0
+    )
+
+    return OnboardingStatusResponse(
+        worker_id=worker.id,
+        policy_id=policy.id,
+        registration_complete=True,
+        policy_status=policy.status,
+        days_since_enrollment=days_since_enrollment,
+        days_until_claim_eligible=days_until_eligible,
+        is_coverage_active=is_coverage_active,
+        waiting_period_days=waiting_period_days,
+        enrollment_date=enrollment_date,
+    )
+
