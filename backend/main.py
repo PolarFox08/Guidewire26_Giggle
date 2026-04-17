@@ -17,6 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional test dependency
 from app.api.fraud import router as fraud_router
 from app.api.admin import router as admin_router
 from app.api.claims import router as claims_router
+from app.api.debug_payout import router as debug_router
 from app.api.onboarding import router as onboarding_router
 from app.api.payout import router as payout_router
 from app.api.policy import router as policy_router
@@ -48,6 +49,8 @@ app.include_router(policy_router)
 app.include_router(fraud_router)
 app.include_router(admin_router)
 app.include_router(premium_router, prefix="/api/v1/premium")
+app.include_router(debug_router)
+
 app.include_router(trigger_router)
 app.include_router(claims_router)
 app.include_router(payout_router)

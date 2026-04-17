@@ -177,8 +177,13 @@ def _next_slab(db: Session, platform: str, deliveries_completed_today: int) -> t
         row = db.execute(stmt).first()
         if row:
             return int(row[0]), _safe_float(row[1], default=0.0)
+        return None
     except Exception:
-        pass  # slab_config table not seeded — use fallback
+        # slab_config table not seeded — rollback to clear InFailedSqlTransaction state
+        try:
+            db.rollback()
+        except Exception:
+            pass
 
     # Fallback: spec-defined slab structure
     slabs = _FALLBACK_SLABS.get(platform.lower(), _FALLBACK_SLABS["zomato"])
