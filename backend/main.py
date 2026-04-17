@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import logging
+import os
 
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 
 try:
@@ -29,6 +32,14 @@ app = FastAPI(
     title="GigShield API",
     description="Parametric income insurance for gig workers",
     version="0.2.0",
+)
+
+# ── CORS — allow browser frontend to call the API ──────────────────────────────
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -102,3 +113,14 @@ def health() -> JSONResponse:
         "version": "0.2.0",
     }
     return JSONResponse(status_code=200, content=response)
+
+
+@app.get("/", include_in_schema=False)
+def root_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/dashboard")
+
+
+# ── Serve frontend static files at /dashboard ──────────────────────────────────
+_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.isdir(_frontend_dir):
+    app.mount("/dashboard", StaticFiles(directory=_frontend_dir, html=True), name="frontend")

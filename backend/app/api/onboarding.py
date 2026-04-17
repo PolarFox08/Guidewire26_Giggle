@@ -390,3 +390,68 @@ def get_onboarding_status(
         enrollment_date=enrollment_date,
     )
 
+
+class WorkerListItem(BaseModel):
+    worker_id: UUID
+    platform: str
+    flood_hazard_tier: str
+    zone_cluster_id: int
+    upi_vpa: str
+    enrollment_date: datetime
+    days_enrolled: int
+    policy_id: UUID | None
+    policy_status: str
+    weekly_premium_amount: float
+    coverage_week_number: int
+    clean_claim_weeks: int
+
+
+class WorkerListResponse(BaseModel):
+    total: int
+    items: list[WorkerListItem]
+
+
+@router.get("/workers", response_model=WorkerListResponse)
+def list_workers(
+    limit: int = 50,
+    db: Session = Depends(get_db),
+) -> WorkerListResponse:
+    """Return all enrolled workers with their active policy details."""
+    from sqlalchemy import func as sqlfunc
+
+    rows = (
+        db.query(WorkerProfile, Policy)
+        .outerjoin(Policy, Policy.worker_id == WorkerProfile.id)
+        .filter(WorkerProfile.is_active.is_(True))
+        .order_by(WorkerProfile.enrollment_date.desc())
+        .limit(limit)
+        .all()
+    )
+
+    now_utc = datetime.now(timezone.utc)
+    items: list[WorkerListItem] = []
+    for worker, policy in rows:
+        enroll = worker.enrollment_date
+        if enroll and enroll.tzinfo is None:
+            enroll = enroll.replace(tzinfo=timezone.utc)
+        days_enrolled = (now_utc - enroll).days if enroll else 0
+
+        items.append(
+            WorkerListItem(
+                worker_id=worker.id,
+                platform=str(worker.platform),
+                flood_hazard_tier=str(worker.flood_hazard_tier),
+                zone_cluster_id=int(worker.zone_cluster_id),
+                upi_vpa=str(worker.upi_vpa),
+                enrollment_date=enroll or now_utc,
+                days_enrolled=days_enrolled,
+                policy_id=policy.id if policy else None,
+                policy_status=str(policy.status) if policy else "none",
+                weekly_premium_amount=float(policy.weekly_premium_amount) if policy else 0.0,
+                coverage_week_number=int(policy.coverage_week_number) if policy else 0,
+                clean_claim_weeks=int(policy.clean_claim_weeks) if policy else 0,
+            )
+        )
+
+    return WorkerListResponse(total=len(items), items=items)
+

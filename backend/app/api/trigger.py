@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Any, Literal, cast
@@ -11,6 +12,8 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 from pydantic import BaseModel, Field
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from app.core.database import get_db
 from app.models.audit import AuditEvent
@@ -185,6 +188,7 @@ def simulate_trigger(
     if zone is None:
         raise HTTPException(status_code=404, detail="zone_cluster_id not found")
 
+    # ── For demo: expire any existing active trigger for this zone ─────────────
     existing_active = (
         db.query(TriggerEvent)
         .filter(
@@ -194,7 +198,8 @@ def simulate_trigger(
         .first()
     )
     if existing_active is not None:
-        raise HTTPException(status_code=409, detail="active trigger already exists for zone")
+        existing_active.status = "resolved"
+        db.flush()
 
     set_zone_suspended(payload.zone_cluster_id)
 
@@ -230,15 +235,32 @@ def simulate_trigger(
     )
     db.commit()
 
-    getattr(initiate_zone_payouts, "delay")(str(trigger.id), int(payload.zone_cluster_id), 1)
+    # ── Run payout logic inline (synchronous, no Celery needed) ──────────────
+    payout_enqueued = False
+    payout_error_msg = None
+    try:
+        result = initiate_zone_payouts(str(trigger.id), int(payload.zone_cluster_id), 1)
+        payout_enqueued = True
+        logger.info("initiate_zone_payouts completed: %s", result)
+    except Exception as exc:
+        payout_error_msg = str(exc)
+        logger.error("initiate_zone_payouts failed: %s", exc, exc_info=True)
+        # Celery .delay() fallback
+        try:
+            getattr(initiate_zone_payouts, "delay")(str(trigger.id), int(payload.zone_cluster_id), 1)
+            payout_enqueued = True
+        except Exception as exc2:
+            logger.error("Celery delay also failed: %s", exc2)
+            payout_enqueued = False
 
     return SimulateTriggerResponse(
         trigger_event_id=_to_uuid(trigger.id),
         zone_cluster_id=payload.zone_cluster_id,
         trigger_type=trigger_type,
         duration_hours=payload.duration_hours,
-        payout_task_enqueued=True,
+        payout_task_enqueued=payout_enqueued,
     )
+
 
 
 @router.get("/active", response_model=ActiveTriggersResponse)

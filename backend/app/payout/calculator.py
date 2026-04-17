@@ -156,21 +156,36 @@ def _declared_per_order_rate(
     return max(0.0, capped_rate)
 
 
+_FALLBACK_SLABS: dict[str, list[tuple[int, float]]] = {
+    "zomato": [(7, 50.0), (12, 120.0), (15, 150.0), (21, 200.0)],
+    "swiggy": [(7, 50.0), (12, 120.0), (15, 150.0), (21, 200.0)],
+}
+
+
 def _next_slab(db: Session, platform: str, deliveries_completed_today: int) -> tuple[int, float] | None:
-    stmt = (
-        select(SlabConfig.deliveries_threshold, SlabConfig.bonus_amount)
-        .where(
-            SlabConfig.platform == platform,
-            SlabConfig.is_active.is_(True),
-            SlabConfig.deliveries_threshold > deliveries_completed_today,
+    try:
+        stmt = (
+            select(SlabConfig.deliveries_threshold, SlabConfig.bonus_amount)
+            .where(
+                SlabConfig.platform == platform,
+                SlabConfig.is_active.is_(True),
+                SlabConfig.deliveries_threshold > deliveries_completed_today,
+            )
+            .order_by(SlabConfig.deliveries_threshold.asc())
+            .limit(1)
         )
-        .order_by(SlabConfig.deliveries_threshold.asc())
-        .limit(1)
-    )
-    row = db.execute(stmt).first()
-    if not row:
-        return None
-    return int(row[0]), _safe_float(row[1], default=0.0)
+        row = db.execute(stmt).first()
+        if row:
+            return int(row[0]), _safe_float(row[1], default=0.0)
+    except Exception:
+        pass  # slab_config table not seeded — use fallback
+
+    # Fallback: spec-defined slab structure
+    slabs = _FALLBACK_SLABS.get(platform.lower(), _FALLBACK_SLABS["zomato"])
+    for threshold, bonus in slabs:
+        if threshold > deliveries_completed_today:
+            return threshold, bonus
+    return None
 
 
 def _slab_reach_probability(
