@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import logging
+import os
 
-from fastapi import APIRouter, FastAPI
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 
 try:
@@ -13,9 +16,13 @@ except ModuleNotFoundError:  # pragma: no cover - optional test dependency
 
 from app.api.fraud import router as fraud_router
 from app.api.admin import router as admin_router
+from app.api.claims import router as claims_router
+from app.api.debug_payout import router as debug_router
 from app.api.onboarding import router as onboarding_router
+from app.api.payout import router as payout_router
 from app.api.policy import router as policy_router
 from app.api.premium import router as premium_router
+from app.api.trigger import router as trigger_router
 from app.core.config import settings
 from app.core.database import engine
 from app.fraud import scorer as fraud_scorer
@@ -28,26 +35,22 @@ app = FastAPI(
     version="0.2.0",
 )
 
+# ── CORS — allow browser frontend to call the API ──────────────────────────────
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-def _build_placeholder_router(prefix: str, tag: str) -> APIRouter:
-    router = APIRouter(prefix=prefix, tags=[tag])
-
-    @router.get("/", status_code=501, summary="TODO")
-    def not_implemented() -> dict[str, str]:
-        return {"detail": f"{tag} router is not implemented yet"}
-
-    return router
-
-
-trigger_router = _build_placeholder_router("/api/v1/trigger", "trigger")
-claims_router = _build_placeholder_router("/api/v1/claims", "claims")
-payout_router = _build_placeholder_router("/api/v1/payout", "payout")
 
 app.include_router(onboarding_router)
 app.include_router(policy_router)
 app.include_router(fraud_router)
 app.include_router(admin_router)
 app.include_router(premium_router, prefix="/api/v1/premium")
+app.include_router(debug_router)
+
 app.include_router(trigger_router)
 app.include_router(claims_router)
 app.include_router(payout_router)
@@ -113,3 +116,14 @@ def health() -> JSONResponse:
         "version": "0.2.0",
     }
     return JSONResponse(status_code=200, content=response)
+
+
+@app.get("/", include_in_schema=False)
+def root_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/dashboard")
+
+
+# ── Serve frontend static files at /dashboard ──────────────────────────────────
+_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+if os.path.isdir(_frontend_dir):
+    app.mount("/dashboard", StaticFiles(directory=_frontend_dir, html=True), name="frontend")

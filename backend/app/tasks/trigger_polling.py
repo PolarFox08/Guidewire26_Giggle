@@ -93,13 +93,10 @@ def _run_async(coro: Any) -> Any:
 
 
 def _get_db_session():
-    db_candidate: Any = get_db()
-    if hasattr(db_candidate, "__next__"):
-        db_gen = cast(Any, db_candidate)
-        db = next(db_gen)
-        return db, db_gen
-
-    return db_candidate, None
+    """Get a fresh DB session without reusing any in-progress request session."""
+    from app.core.database import SessionLocal
+    db = SessionLocal()
+    return db, None
 
 
 def _zone_tier_from_numeric(value: Any) -> str:
@@ -438,5 +435,7 @@ def initiate_zone_payouts(
 
         return {"workers_processed": processed, "claims_created": claims_created}
     finally:
-        if db_gen is not None and hasattr(db_gen, "close"):
-            db_gen.close()
+        try:
+            db.close()
+        except Exception:
+            pass

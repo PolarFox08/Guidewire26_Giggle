@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>GigShield — Income Protection for Delivery Partners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#070a12;--surface:#0c1018;--card:#111827;--card2:#161d2c;--border:#1e2d42;--accent:#3b82f6;--purple:#8b5cf6;--green:#10b981;--red:#ef4444;--orange:#f59e0b;--text:#e2e8f0;--muted:#64748b;--r:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{display:flex;align-items:center;gap:12px;padding:14px 32px;background:rgba(7,10,18,.9);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);}
+.logo{font-size:1.05rem;font-weight:800;display:flex;align-items:center;gap:9px;letter-spacing:-.02em;}
+.logo-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:.85rem;}
+.nav-links{display:flex;gap:2px;margin-left:28px;}
+.nl{padding:7px 13px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:.83rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.nl.on{background:var(--card2);color:var(--text);}
+.nl:hover:not(.on){color:var(--text);}
+.sys-status{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--muted);}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* PAGES */
+.page{display:none;padding:26px 32px;max-width:1280px;margin:0 auto;}
+.page.on{display:block;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-size:.88rem;font-weight:600;}
+
+/* STATS */
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;}
+.stat-label{font-size:.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.stat-val{font-size:1.9rem;font-weight:800;line-height:1;}
+.stat-sub{font-size:.73rem;color:var(--muted);margin-top:5px;}
+
+/* CHIPS */
+.chip{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.chip-g{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.chip-r{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+.chip-o{background:rgba(245,158,11,.12);color:var(--orange);border:1px solid rgba(245,158,11,.2);}
+.chip-b{background:rgba(59,130,246,.12);color:var(--accent);border:1px solid rgba(59,130,246,.2);}
+.chip-p{background:rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.2);}
+
+/* BTNS */
+.btn{padding:8px 16px;border-radius:8px;border:none;font-family:inherit;font-size:.81rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-p{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.3);}
+.btn-s{background:var(--card2);color:var(--text);border:1px solid var(--border);}
+.btn-s:hover{background:var(--border);}
+.btn-r{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+.btn-r:hover{background:rgba(239,68,68,.25);}
+.btn-sm{padding:5px 11px;font-size:.73rem;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+.tbl th{text-align:left;padding:9px 12px;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border-bottom:1px solid var(--border);}
+.tbl td{padding:11px 12px;border-bottom:1px solid rgba(30,45,66,.4);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.015);}
+
+/* FORM */
+.fgrp{margin-bottom:14px;}
+.fgrp label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);margin-bottom:5px;}
+.fgrp input,.fgrp select{width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:.82rem;outline:none;transition:border-color .15s;}
+.fgrp input:focus,.fgrp select:focus{border-color:var(--accent);}
+
+/* ALERTS */
+.alert{padding:11px 14px;border-radius:8px;font-size:.81rem;margin:10px 0;line-height:1.5;}
+.alert-s{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);color:#6ee7b7;}
+.alert-e{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5;}
+.alert-i{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);color:#93c5fd;}
+
+/* ROWS */
+.rows{display:flex;flex-direction:column;gap:0;}
+.row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(30,45,66,.4);font-size:.82rem;}
+.row:last-child{border-bottom:none;}
+.row-label{color:var(--muted);}
+
+/* PROGRESS BAR */
+.pbar{height:4px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:5px;}
+.pfill{height:100%;border-radius:3px;transition:width .4s;}
+.pf-g{background:linear-gradient(90deg,#10b981,#34d399);}
+.pf-r{background:linear-gradient(90deg,#ef4444,#f87171);}
+.pf-o{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.pf-b{background:linear-gradient(90deg,#3b82f6,#8b5cf6);}
+
+/* PIPELINE */
+.pipe{display:flex;align-items:center;gap:0;margin:14px 0;}
+.pnode{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;transition:border-color .3s;}
+.pnode.lit{border-color:var(--accent);}
+.pnode-lbl{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.pnode-val{font-size:.78rem;font-weight:700;}
+.parr{color:var(--border);font-size:1rem;padding:0 5px;flex-shrink:0;}
+.parr.live{color:var(--accent);animation:ap 1s infinite;}
+@keyframes ap{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* FRAUD RING */
+.fr-wrap{position:relative;width:66px;height:66px;flex-shrink:0;}
+.fr-wrap svg{transform:rotate(-90deg);}
+.fr-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;}
+
+/* AV */
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0;}
+
+/* MISC */
+.mt{margin-top:16px;}.mb{margin-bottom:16px;}
+.mono{font-family:monospace;font-size:.73rem;color:var(--muted);}
+.empty{text-align:center;padding:28px;color:var(--muted);font-size:.83rem;}
+.section-title{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+
+@media(max-width:900px){.g4,.g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><div class="logo-mark">🛡</div>GigShield</div>
+  <div class="nav-links">
+    <button class="nl on" onclick="nav('coverage')" id="nav-coverage">Coverage</button>
+    <button class="nl" onclick="nav('workers')" id="nav-workers">Workers</button>
+    <button class="nl" onclick="nav('fraud')" id="nav-fraud">Fraud Engine</button>
+    <button class="nl" onclick="nav('triggers')" id="nav-triggers">Triggers &amp; Payouts</button>
+    <button class="nl" onclick="nav('admin')" id="nav-admin">Admin</button>
+  </div>
+  <div class="sys-status"><div class="dot" id="sys-dot"></div><span id="sys-lbl">Connecting...</span></div>
+</nav>
+
+<!-- ═══════════════════════ COVERAGE ═══════════════════════ -->
+<div class="page on" id="page-coverage">
+  <div class="g4 mb">
+    <div class="stat"><div class="stat-label">Active Policies</div><div class="stat-val" style="color:var(--accent)" id="c-active">—</div><div class="stat-sub">Workers currently covered</div></div>
+    <div class="stat"><div class="stat-label">Live Disruptions</div><div class="stat-val" style="color:var(--orange)" id="c-trigs">—</div><div class="stat-sub">Trigger events active</div></div>
+    <div class="stat"><div class="stat-label">Claims This Week</div><div class="stat-val" id="c-claims">—</div><div class="stat-sub">Auto-processed by system</div></div>
+    <div class="stat"><div class="stat-label">Payouts This Week</div><div class="stat-val" style="color:var(--green)" id="c-payouts">—</div><div class="stat-sub">Total disbursed</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title" id="worker-name-title">Policy</span><span class="chip chip-g" id="pol-status-chip">Loading</span></div>
+      <div class="rows" id="policy-rows"><div class="empty">Loading policy...</div></div>
+      <div class="mt">
+        <div class="section-title">Premium Factors — SHAP Explanation</div>
+        <div class="rows" id="shap-rows"><div class="empty">—</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Zone — Velachery, Chennai</span><span class="chip" id="zone-chip">—</span></div>
+      <div id="zone-alert"></div>
+      <div class="mt">
+        <div class="section-title">Zone Risk Profile</div>
+        <div class="rows">
+          <div class="row"><span class="row-label">Flood Tier</span><span class="chip chip-r">HIGH (Tier 3)</span></div>
+          <div class="row"><span class="row-label">Heavy Rain Days / Year</span><span style="font-weight:600">12.5 days</span></div>
+          <div class="row"><span class="row-label">3-Point Weather Sampling</span><span class="chip chip-g">Active</span></div>
+          <div class="row"><span class="row-label">Centroid</span><span class="mono">12.9816°N 80.2180°E</span></div>
+          <div class="row"><span class="row-label">Corroboration Threshold</span><span style="font-weight:600">2 of 3 sources</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g2 mt">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Claim History</span><button class="btn btn-s btn-sm" onclick="loadCoverage()">↻ Refresh</button></div>
+      <div id="claims-body"><div class="empty">No claims on record</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Payout Ledger</span><span class="chip chip-b" id="payout-chip">0 events</span></div>
+      <div id="payouts-body"><div class="empty">No payouts yet</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ WORKERS ═══════════════════════ -->
+<div class="page" id="page-workers">
+  <div class="card-hd mb">
+    <div style="font-size:1.05rem;font-weight:700">Enrolled Workers</div>
+    <span class="chip chip-b" id="worker-count">Loading...</span>
+  </div>
+  <div class="card mb">
+    <p style="color:var(--muted);font-size:.83rem;line-height:1.6">
+      Every partner on this page is enrolled in the parametric income protection scheme. Premiums are calculated weekly by the LightGBM pricing model using zone flood tier, delivery history, and seasonal risk factors. Workers in high-tier zones pay slightly more but receive larger payouts during disruptions.
+    </p>
+  </div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr>
+        <th>Worker</th><th>Platform</th><th>Zone / Risk Tier</th>
+        <th>Weekly Premium</th><th>Coverage Week</th><th>Enrolled</th><th>Status</th>
+      </tr></thead>
+      <tbody id="workers-table"><tr><td colspan="7" class="empty">Loading workers...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FRAUD ENGINE ═══════════════════════ -->
+<div class="page" id="page-fraud">
+  <div class="g4 mb">
+    <div class="stat"><div class="stat-label">Fraud Model Precision</div><div class="stat-val" style="color:var(--green)" id="f-prec">—</div><div class="stat-sub">Ensemble: IF + CBLOF</div></div>
+    <div class="stat"><div class="stat-label">Premium RMSE</div><div class="stat-val" id="f-rmse">—</div><div class="stat-sub">vs actual claim payout</div></div>
+    <div class="stat"><div class="stat-label">Slab Config</div><div class="stat-val" style="color:var(--green)" id="f-slab">—</div><div class="stat-sub">Zomato &amp; Swiggy</div></div>
+    <div class="stat"><div class="stat-label">Premium Drift</div><div class="stat-val" style="color:var(--green)" id="f-drift">—</div><div class="stat-sub">4-week vs 12-week avg</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">7-Signal Fraud Engine</span><span class="chip chip-p">Ensemble</span></div>
+      <div class="section-title mt">Routing Rules</div>
+      <div class="rows mb">
+        <div class="row"><span class="row-label">Score &lt; 0.30</span><span class="chip chip-g">Auto Approve → Instant UPI</span></div>
+        <div class="row"><span class="row-label">0.30 – 0.70</span><span class="chip chip-o">Partial Review → 50% Payout</span></div>
+        <div class="row"><span class="row-label">Score &gt; 0.70</span><span class="chip chip-r">Hold → Manual Review</span></div>
+      </div>
+      <div class="section-title">Signal Inputs</div>
+      <div class="rows">
+        <div class="row"><span class="row-label">Zone–GPS Claim Match</span><span class="chip chip-b">PostGIS ST_Within</span></div>
+        <div class="row"><span class="row-label">Delivery Activity (7d)</span><span class="chip chip-b">History baseline</span></div>
+        <div class="row"><span class="row-label">Enrollment Age Gate</span><span class="chip chip-b">≥ 28 days</span></div>
+        <div class="row"><span class="row-label">Claim Frequency (90d)</span><span class="chip chip-b">Event count</span></div>
+        <div class="row"><span class="row-label">Device Fingerprint</span><span class="chip chip-b">Ring-registration check</span></div>
+        <div class="row"><span class="row-label">Isolation Forest (IF)</span><span class="chip chip-b">Anomaly detector</span></div>
+        <div class="row"><span class="row-label">CBLOF Clustering</span><span class="chip chip-b">Outlier scoring</span></div>
+      </div>
+      <div class="section-title mt">GPS Spoofing Detection</div>
+      <div class="rows">
+        <div class="row"><span class="row-label">Method</span><span style="font-size:.8rem">Velachery polygon bounding check</span></div>
+        <div class="row"><span class="row-label">GPS Variance</span><span class="chip chip-g">Within zone bounds</span></div>
+        <div class="row"><span class="row-label">Anchor Baseline</span><span style="font-size:.8rem">30-day delivery track</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Claims — Fraud Analysis</span><button class="btn btn-s btn-sm" onclick="loadFraud()">↻</button></div>
+      <div id="fraud-claims"><div class="empty">No claims to analyse yet.<br/>Fire a disruption event to see scores.</div></div>
+      <div class="section-title mt">Fake Weather Claim Detection</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:.81rem;color:var(--muted);line-height:1.7">
+        Historical weather cross-reference: claims are checked against Open-Meteo 3-point sampling at the zone centroid, NNE+3km, and SSW+3km offsets. A claim filed on a sunny day against a rain trigger is auto-flagged and routed to <span style="color:var(--red);font-weight:600">hold</span>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TRIGGERS & PAYOUTS ═══════════════════════ -->
+<div class="page" id="page-triggers">
+  <div class="g2">
+    <div>
+      <div class="card mb">
+        <div class="card-hd"><span class="card-title">Declare Disruption Event</span></div>
+        <p style="color:var(--muted);font-size:.8rem;margin-bottom:14px;line-height:1.6">
+          Simulates a real-world disruption corroborated by 3-point weather sampling, GIS flood overlay, and platform suspension signals. All eligible workers in the zone automatically receive payout calculations.
+        </p>
+        <div class="fgrp">
+          <label>Zone</label>
+          <select id="t-zone"><option value="1">Zone 1 — Velachery, Chennai (High Flood Tier)</option></select>
+        </div>
+        <div class="fgrp">
+          <label>Disruption Type</label>
+          <select id="t-type">
+            <option value="heavy_rain">Heavy Rain (≥64.5 mm / 24h)</option>
+            <option value="very_heavy_rain">Very Heavy Rain (≥88 mm)</option>
+            <option value="extreme_heavy_rain">Extreme Rain (≥120 mm)</option>
+            <option value="severe_heatwave">Severe Heatwave (≥45°C)</option>
+            <option value="severe_aqi">Severe AQI (≥300)</option>
+            <option value="platform_suspension">Platform Suspension</option>
+          </select>
+        </div>
+        <div class="fgrp">
+          <label>Duration (hours)</label>
+          <input type="number" id="t-dur" value="3" min="1" max="72"/>
+        </div>
+        <button class="btn btn-r" style="width:100%" id="fire-btn" onclick="fireTrigger()">
+          Declare Disruption &amp; Initiate Payouts
+        </button>
+        <div id="trigger-result"></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Active Disruptions</span><button class="btn btn-s btn-sm" onclick="loadActiveTriggers()">↻</button></div>
+        <div id="active-triggers"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="card mb" style="background:linear-gradient(150deg,rgba(59,130,246,.04),rgba(139,92,246,.04))">
+        <div class="card-hd"><span class="card-title">Payout Pipeline</span></div>
+        <div class="pipe">
+          <div class="pnode" id="pp-trig"><div class="pnode-lbl">Disruption</div><div class="pnode-val" id="pv-trig" style="color:var(--muted)">Idle</div></div>
+          <div class="parr" id="pa1">→</div>
+          <div class="pnode" id="pp-claim"><div class="pnode-lbl">Claim Created</div><div class="pnode-val" id="pv-claim" style="color:var(--muted)">—</div></div>
+          <div class="parr" id="pa2">→</div>
+          <div class="pnode" id="pp-fraud"><div class="pnode-lbl">Fraud Score</div><div class="pnode-val" id="pv-fraud" style="color:var(--muted)">—</div></div>
+          <div class="parr" id="pa3">→</div>
+          <div class="pnode" id="pp-pay"><div class="pnode-lbl">UPI Payout</div><div class="pnode-val" id="pv-pay" style="color:var(--muted)">—</div></div>
+        </div>
+        <div id="pipe-log" style="max-height:120px;overflow-y:auto;"></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Payout Ledger</span></div>
+        <div id="tp-payouts"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ADMIN ═══════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="g4 mb" id="admin-stats">
+    <div class="stat"><div class="stat-label">Loading...</div><div class="stat-val">—</div></div>
+  </div>
+  <div class="g3">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Enrollment &amp; Retention</span></div>
+      <div class="rows" id="enroll-rows"><div class="empty">Loading...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Loss Ratio by Zone</span><span class="chip chip-b">Monthly</span></div>
+      <div id="loss-body"><div class="empty">Loading...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Model Health</span></div>
+      <div class="rows" id="model-rows"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+const ADMIN_KEY = 'gigshield-admin-2026';
+
+// State
+let primaryWorkerId = null;
+let allWorkers = [];
+
+// UPI-to-name mapping for display
+const UPI_NAMES = {
+  'priya.demo@upi': 'Priya S.',
+  'rajan.swiggy@upi': 'Rajan K.',
+  'kavitha.v@upi': 'Kavitha V.',
+  'muthu.raj@upi': 'Muthu R.',
+};
+const AV_COLORS = ['rgba(59,130,246,.2)|#3b82f6','rgba(16,185,129,.2)|#10b981','rgba(139,92,246,.2)|#8b5cf6','rgba(245,158,11,.2)|#f59e0b'];
+
+function displayName(upi) {
+  return UPI_NAMES[upi] || ('Worker ' + (upi||'').split('@')[0].slice(-4));
+}
+function initials(name) {
+  return name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+}
+function avStyle(i) {
+  const [bg,col] = AV_COLORS[i % AV_COLORS.length].split('|');
+  return `background:${bg};color:${col}`;
+}
+
+async function get(path) {
+  const r = await fetch(API + path, {headers:{'X-Admin-Key': ADMIN_KEY}});
+  if (!r.ok) throw new Error(r.status + ' ' + path);
+  return r.json();
+}
+async function post(path, body) {
+  const r = await fetch(API + path, {method:'POST',headers:{'Content-Type':'application/json','X-Admin-Key': ADMIN_KEY},body:JSON.stringify(body)});
+  if (!r.ok) throw new Error(r.status + ': ' + await r.text());
+  return r.json();
+}
+
+function inr(v) { return '₹' + parseFloat(v||0).toFixed(2); }
+function pct(v,d=1) { return (parseFloat(v||0)*100).toFixed(d)+'%'; }
+function ago(dt) {
+  if (!dt) return '—';
+  const s = Math.floor((Date.now()-new Date(dt))/1000);
+  if (s<60) return s+'s ago'; if (s<3600) return Math.floor(s/60)+'m ago';
+  if (s<86400) return Math.floor(s/3600)+'h ago';
+  return new Date(dt).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+}
+function chipFor(s) {
+  return {active:'chip-g',approved:'chip-g',paid:'chip-g',processing:'chip-b',
+          pending:'chip-o',partial:'chip-o',held:'chip-o',waiting:'chip-o',
+          failed:'chip-r',rejected:'chip-r',suspended:'chip-r',resolved:'chip-b'}[s]||'chip-b';
+}
+function ring(score) {
+  const p = Math.min(1,Math.max(0,score));
+  const R=27,cx=33,cy=33,c=2*Math.PI*R,off=c*(1-p);
+  const col = p<.3?'#10b981':p<.7?'#f59e0b':'#ef4444';
+  return `<svg width="66" height="66" viewBox="0 0 66 66"><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1e2d42" stroke-width="7"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${col}" stroke-width="7" stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round"/></svg>`;
+}
+
+// ──────────────────────── HEALTH ────────────────────────────
+async function checkHealth() {
+  try {
+    const h = await get('/api/v1/health');
+    const ok = h.database === 'ok';
+    document.getElementById('sys-dot').style.background = ok ? 'var(--green)' : 'var(--red)';
+    document.getElementById('sys-lbl').textContent = ok ? 'All systems operational' : 'Database degraded';
+  } catch { document.getElementById('sys-lbl').textContent = 'API offline'; }
+}
+
+// ──────────────────────── NAV ────────────────────────────────
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nl').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  document.getElementById('nav-'+id).classList.add('on');
+  if(id==='coverage') loadCoverage();
+  if(id==='workers') loadWorkers();
+  if(id==='fraud') loadFraud();
+  if(id==='triggers') { loadActiveTriggers(); loadTriggerPayouts(); }
+  if(id==='admin') loadAdmin();
+}
+
+// ──────────────────────── WORKERS (load primary) ─────────────
+async function loadAllWorkers() {
+  try {
+    const data = await get('/api/v1/onboarding/workers');
+    allWorkers = data.items || [];
+    if (allWorkers.length > 0 && !primaryWorkerId) {
+      // Use priya.demo@upi as primary if present, otherwise first
+      const priya = allWorkers.find(w => w.upi_vpa === 'priya.demo@upi');
+      primaryWorkerId = (priya || allWorkers[0]).worker_id;
+    }
+    return allWorkers;
+  } catch(e) {
+    console.error('loadAllWorkers:', e);
+    return [];
+  }
+}
+
+// ──────────────────────── COVERAGE PAGE ──────────────────────
+async function loadCoverage() {
+  if (!primaryWorkerId) await loadAllWorkers();
+  if (!primaryWorkerId) { return; }
+
+  try {
+    const [sumR, polR, claimR, payR, zoneR] = await Promise.allSettled([
+      get('/api/v1/admin/dashboard/summary'),
+      get('/api/v1/policy/' + primaryWorkerId),
+      get('/api/v1/claims/' + primaryWorkerId),
+      get('/api/v1/payout/' + primaryWorkerId + '/history'),
+      get('/api/v1/trigger/zone/1'),
+    ]);
+
+    if (sumR.value) {
+      const s = sumR.value;
+      document.getElementById('c-active').textContent = s.active_workers ?? '—';
+      document.getElementById('c-trigs').textContent = s.active_triggers ?? 0;
+      document.getElementById('c-claims').textContent = s.claims_this_week ?? 0;
+      document.getElementById('c-payouts').textContent = inr(s.payouts_this_week || 0);
+    }
+
+    if (polR.value) renderPolicy(polR.value);
+    if (zoneR.value) renderZone(zoneR.value);
+    if (claimR.value) renderClaims(claimR.value.items || []);
+    if (payR.value) {
+      const items = payR.value.items || [];
+      renderPayouts(items);
+      document.getElementById('payout-chip').textContent = items.length + ' event' + (items.length!==1?'s':'');
+    }
+  } catch(e) { console.error('loadCoverage:', e); }
+}
+
+function renderPolicy(p) {
+  const workerData = allWorkers.find(w => w.worker_id === primaryWorkerId);
+  const upi = workerData?.upi_vpa || '';
+  const name = displayName(upi);
+  document.getElementById('worker-name-title').textContent = 'Policy — ' + name;
+  document.getElementById('pol-status-chip').textContent = (p.status || 'active').toUpperCase();
+  document.getElementById('pol-status-chip').className = 'chip ' + chipFor(p.status || 'active');
+
+  document.getElementById('policy-rows').innerHTML = `
+    <div class="row"><span class="row-label">Worker ID</span><span class="mono">${String(p.worker_id||primaryWorkerId).slice(0,8)}…</span></div>
+    <div class="row"><span class="row-label">Weekly Premium</span><span style="font-weight:700;color:var(--accent)">${inr(p.weekly_premium_amount)}</span></div>
+    <div class="row"><span class="row-label">Coverage Week</span><span style="font-weight:600">#${p.coverage_week_number||'—'}</span></div>
+    <div class="row"><span class="row-label">Clean Claim Weeks</span><span style="font-weight:600">${p.clean_claim_weeks??'—'}</span></div>
+    <div class="row"><span class="row-label">Pricing Model</span><span class="chip chip-p">${(p.model_used||'lgbm').toUpperCase()}</span></div>
+    <div class="row"><span class="row-label">Claim Eligible</span><span class="chip ${(p.days_until_claim_eligible||0)===0?'chip-g':'chip-o'}">${(p.days_until_claim_eligible||0)===0?'Yes':'In '+(p.days_until_claim_eligible)+' days'}</span></div>
+    <div class="row"><span class="row-label">UPI</span><span class="mono">${upi||'—'}</span></div>`;
+
+  const shap = p.shap_explanation_json || [];
+  document.getElementById('shap-rows').innerHTML = shap.length
+    ? shap.map(s=>`<div class="row"><span style="font-size:.8rem;line-height:1.5">${s}</span></div>`).join('')
+    : '<div class="empty" style="padding:12px 0">No explanation data</div>';
+}
+
+function renderZone(z) {
+  const active = z.status === 'active';
+  const recovering = z.status === 'recovering';
+  const chip = document.getElementById('zone-chip');
+  chip.textContent = (z.status || 'clear').replace('_',' ').toUpperCase();
+  chip.className = 'chip ' + (active?'chip-r':recovering?'chip-o':'chip-g');
+
+  document.getElementById('zone-alert').innerHTML = active
+    ? `<div class="alert alert-e"><strong>${(z.trigger_type||'').replace(/_/g,' ').toUpperCase()}</strong> — zone suspended<br/><small>Corroboration: ${z.sources_confirmed||3}/3 sources · Composite: ${((z.composite_score||1)*100).toFixed(0)}% · ${ago(z.triggered_at)}</small></div>`
+    : `<div style="color:var(--muted);font-size:.82rem;padding:6px 0">No active disruption. All weather signals within normal thresholds.</div>`;
+}
+
+function renderClaims(items) {
+  const el = document.getElementById('claims-body');
+  if (!items.length) { el.innerHTML='<div class="empty">No claims on record for this policy period</div>'; return; }
+  el.innerHTML = '<table class="tbl"><thead><tr><th>Claim</th><th>Amount</th><th>Fraud Score</th><th>Routing</th><th>Status</th><th>Filed</th></tr></thead><tbody>' +
+    items.map(c => {
+      const sc = parseFloat(c.fraud_score||0);
+      const scol = sc<.3?'var(--green)':sc<.7?'var(--orange)':'var(--red)';
+      const pf = sc<.3?'pf-g':sc<.7?'pf-o':'pf-r';
+      return `<tr>
+        <td class="mono">${String(c.claim_id).slice(-8).toUpperCase()}</td>
+        <td style="font-weight:700">${inr(c.total_payout_amount)}</td>
+        <td><div style="display:flex;align-items:center;gap:8px">
+          <span style="color:${scol};font-weight:700">${(sc*100).toFixed(0)}%</span>
+          <div class="pbar" style="width:54px"><div class="pfill ${pf}" style="width:${sc*100}%"></div></div>
+        </div></td>
+        <td><span class="chip chip-b">${c.fraud_routing}</span></td>
+        <td><span class="chip ${chipFor(c.status)}">${c.status}</span></td>
+        <td style="color:var(--muted)">${ago(c.claim_date)}</td>
+      </tr>`;
+    }).join('') + '</tbody></table>';
+}
+
+function renderPayouts(items) {
+  const el = document.getElementById('payouts-body');
+  if (!items.length) { el.innerHTML='<div class="empty">No payouts processed yet</div>'; return; }
+  el.innerHTML = '<table class="tbl"><thead><tr><th>Amount</th><th>Status</th><th>Razorpay ID</th><th>Initiated</th></tr></thead><tbody>' +
+    items.map(p=>`<tr>
+      <td style="font-weight:700;color:var(--green)">${inr(p.amount)}</td>
+      <td><span class="chip ${chipFor(p.status)}">${p.status}</span></td>
+      <td class="mono">${p.razorpay_payout_id||'—'}</td>
+      <td style="color:var(--muted)">${ago(p.initiated_at)}</td>
+    </tr>`).join('') + '</tbody></table>';
+}
+
+// ──────────────────────── WORKERS PAGE ───────────────────────
+async function loadWorkers() {
+  try {
+    const data = await get('/api/v1/onboarding/workers');
+    const items = data.items || [];
+    document.getElementById('worker-count').textContent = items.length + ' enrolled';
+    allWorkers = items;
+
+    document.getElementById('workers-table').innerHTML = items.length
+      ? items.map((w, i) => {
+          const name = displayName(w.upi_vpa);
+          const [bg, col] = AV_COLORS[i%4].split('|');
+          const tierChip = w.flood_hazard_tier==='high'?'chip-r':w.flood_hazard_tier==='medium'?'chip-o':'chip-g';
+          return `<tr>
+            <td><div style="display:flex;align-items:center;gap:10px">
+              <div class="av" style="background:${bg};color:${col}">${initials(name)}</div>
+              <div>
+                <div style="font-weight:600;font-size:.85rem">${name}</div>
+                <div class="mono">${w.upi_vpa}</div>
+              </div>
+            </div></td>
+            <td><span class="chip ${w.platform==='zomato'?'chip-r':'chip-o'}">${w.platform.toUpperCase()}</span></td>
+            <td><span class="chip ${tierChip}">${w.flood_hazard_tier.toUpperCase()}</span> Zone ${w.zone_cluster_id}</td>
+            <td style="font-weight:700;color:var(--accent)">${inr(w.weekly_premium_amount)}</td>
+            <td style="font-weight:600">Week #${w.coverage_week_number}</td>
+            <td style="color:var(--muted)">${w.days_enrolled}d ago</td>
+            <td><span class="chip ${chipFor(w.policy_status)}">${w.policy_status.toUpperCase()}</span></td>
+          </tr>`;
+        }).join('')
+      : '<tr><td colspan="7" class="empty">No workers found</td></tr>';
+  } catch(e) {
+    document.getElementById('workers-table').innerHTML = `<tr><td colspan="7" class="empty">Error: ${e.message}</td></tr>`;
+  }
+}
+
+// ──────────────────────── FRAUD PAGE ─────────────────────────
+async function loadFraud() {
+  if (!primaryWorkerId) await loadAllWorkers();
+  try {
+    const [mhR, claimR] = await Promise.allSettled([
+      get('/api/v1/admin/model-health'),
+      primaryWorkerId ? get('/api/v1/claims/' + primaryWorkerId) : Promise.resolve({items:[]}),
+    ]);
+    if (mhR.value) {
+      const m = mhR.value;
+      document.getElementById('f-prec').textContent = m.fraud_precision!=null ? pct(m.fraud_precision) : '—';
+      document.getElementById('f-rmse').textContent = m.premium_model_rmse!=null ? '₹'+parseFloat(m.premium_model_rmse).toFixed(2) : '—';
+      document.getElementById('f-slab').textContent = m.slab_config_stale ? 'Stale' : 'Current';
+      document.getElementById('f-slab').style.color = m.slab_config_stale ? 'var(--red)' : 'var(--green)';
+      document.getElementById('f-drift').textContent = m.baseline_drift_alert ? 'Alert' : 'Stable';
+      document.getElementById('f-drift').style.color = m.baseline_drift_alert ? 'var(--orange)' : 'var(--green)';
+    }
+    const items = claimR.value?.items || [];
+    const el = document.getElementById('fraud-claims');
+    if (!items.length) {
+      el.innerHTML = '<div class="empty">No claims to analyse.<br/>Declare a disruption event to see fraud scores.</div>';
+      return;
+    }
+    el.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px">' +
+      items.map(c => {
+        const sc = parseFloat(c.fraud_score||0);
+        const col = sc<.3?'#10b981':sc<.7?'#f59e0b':'#ef4444';
+        const pf = sc<.3?'pf-g':sc<.7?'pf-o':'pf-r';
+        return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="fr-wrap">${ring(sc)}<div class="fr-val" style="color:${col}">${(sc*100).toFixed(0)}%</div></div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:.84rem">Claim ${String(c.claim_id).slice(-6).toUpperCase()}</div>
+              <div style="font-size:.75rem;color:var(--muted);margin:4px 0">
+                Routing: <strong style="color:var(--text)">${c.fraud_routing}</strong>
+                → <span class="chip ${chipFor(c.status)}">${c.status}</span>
+              </div>
+              <div style="font-size:.75rem;color:var(--muted)">Payout: <strong>${inr(c.total_payout_amount)}</strong> · ${ago(c.claim_date)}</div>
+              <div class="pbar" style="margin-top:6px"><div class="pfill ${pf}" style="width:${sc*100}%"></div></div>
+            </div>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  } catch(e) { console.error('loadFraud:', e); }
+}
+
+// ──────────────────────── TRIGGERS PAGE ──────────────────────
+async function fireTrigger() {
+  const type = document.getElementById('t-type').value;
+  const zone = parseInt(document.getElementById('t-zone').value);
+  const dur  = parseFloat(document.getElementById('t-dur').value);
+  const resEl = document.getElementById('trigger-result');
+  const btn = document.getElementById('fire-btn');
+
+  btn.disabled = true;
+  resEl.innerHTML = '<div class="alert alert-i">Declaring disruption...</div>';
+  setPipe('trig','Declared','var(--orange)'); setArrow('pa1','live');
+
+  try {
+    const r = await post('/api/v1/trigger/simulate', {zone_cluster_id: zone, trigger_type: type, duration_hours: dur});
+    setPipe('trig','Active','var(--green)');
+    resEl.innerHTML = `<div class="alert alert-s">Disruption declared — payout pipeline running for all eligible workers in Zone ${zone}.</div>`;
+    pipeLog('Trigger fired: ' + type);
+    loadActiveTriggers();
+    setTimeout(() => pollForClaims(), 1200);
+  } catch(e) {
+    setPipe('trig','Error','var(--red)');
+    resEl.innerHTML = '<div class="alert alert-e">' + e.message + '</div>';
+    btn.disabled = false;
+  }
+}
+
+async function pollForClaims(attempts=0) {
+  if (!primaryWorkerId) await loadAllWorkers();
+  if (!primaryWorkerId) return;
+  if (attempts > 8) { setPipe('claim','No claim','var(--muted)'); document.getElementById('fire-btn').disabled=false; return; }
+
+  setArrow('pa2','live'); setPipe('claim','Checking…','var(--orange)');
+  try {
+    const c = await get('/api/v1/claims/' + primaryWorkerId);
+    const items = c.items || [];
+    if (items.length) {
+      const first = items[0];
+      const sc = parseFloat(first.fraud_score||0);
+      setPipe('claim', items.length + ' claim(s)', 'var(--green)');
+      setArrow('pa2',''); setArrow('pa3','live');
+      const col = sc<.3?'var(--green)':sc<.7?'var(--orange)':'var(--red)';
+      setPipe('fraud', (sc*100).toFixed(0)+'% — '+first.fraud_routing, col);
+      pipeLog('Claim created · Fraud score: '+(sc*100).toFixed(0)+'% → '+first.fraud_routing);
+      setTimeout(() => loadTriggerPayouts(true), 1000);
+    } else {
+      setTimeout(() => pollForClaims(attempts+1), 1500);
+    }
+  } catch { setTimeout(() => pollForClaims(attempts+1), 1500); }
+}
+
+async function loadTriggerPayouts(fromPoll=false) {
+  if (!primaryWorkerId) return;
+  try {
+    const p = await get('/api/v1/payout/' + primaryWorkerId + '/history');
+    const items = p.items || [];
+    const el = document.getElementById('tp-payouts');
+    if (!items.length) { el.innerHTML='<div class="empty">No payouts yet</div>'; return; }
+    const first = items[0];
+    if (fromPoll) {
+      setArrow('pa3',''); setPipe('pay', inr(first.amount), 'var(--green)');
+      pipeLog('UPI payout: ' + inr(first.amount) + ' → ' + first.razorpay_payout_id);
+      document.getElementById('fire-btn').disabled = false;
+      document.getElementById('trigger-result').innerHTML = '';
+    }
+    el.innerHTML = '<table class="tbl"><thead><tr><th>Amount</th><th>Status</th><th>Razorpay ID</th><th>Initiated</th></tr></thead><tbody>' +
+      items.map(i=>`<tr>
+        <td style="font-weight:700;color:var(--green)">${inr(i.amount)}</td>
+        <td><span class="chip ${chipFor(i.status)}">${i.status}</span></td>
+        <td class="mono">${i.razorpay_payout_id||'—'}</td>
+        <td style="color:var(--muted)">${ago(i.initiated_at)}</td>
+      </tr>`).join('') + '</tbody></table>';
+  } catch {}
+}
+
+async function loadActiveTriggers() {
+  try {
+    const d = await get('/api/v1/trigger/active');
+    const items = d.items || [];
+    const el = document.getElementById('active-triggers');
+    if (!items.length) { el.innerHTML='<div class="empty">No active disruptions</div>'; return; }
+    el.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' +
+      items.map(t=>`<div style="background:var(--surface);border:1px solid rgba(239,68,68,.25);border-radius:9px;padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:600;font-size:.85rem">${(t.trigger_type||'').replace(/_/g,' ')}</span>
+          <span class="chip chip-r">ACTIVE</span>
+        </div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:5px">
+          Zone ${t.zone_cluster_id} · Score ${((t.composite_score||1)*100).toFixed(0)}% · ${t.sources_confirmed} sources · ${ago(t.triggered_at)}
+        </div>
+      </div>`).join('') + '</div>';
+  } catch {}
+}
+
+function setPipe(id, val, col) {
+  const v = document.getElementById('pv-'+id);
+  if(v){v.textContent=val;v.style.color=col||'var(--text)';}
+  const n = document.getElementById('pp-'+id);
+  if(n){n.classList.toggle('lit', col==='var(--green)');}
+}
+function setArrow(id, cls) {
+  const el = document.getElementById(id);
+  if(el) el.className = 'parr ' + cls;
+}
+function pipeLog(msg) {
+  const el = document.getElementById('pipe-log');
+  const d = document.createElement('div');
+  d.className = 'row'; d.style.fontSize='.73rem';
+  d.innerHTML=`<span class="row-label">${new Date().toLocaleTimeString('en-IN')}</span><span style="color:var(--green)">${msg}</span>`;
+  el.prepend(d);
+}
+
+// ──────────────────────── ADMIN PAGE ─────────────────────────
+async function loadAdmin() {
+  try {
+    const [sumR, enrR, lrR, mhR] = await Promise.allSettled([
+      get('/api/v1/admin/dashboard/summary'),
+      get('/api/v1/admin/enrollment-metrics'),
+      get('/api/v1/admin/dashboard/loss-ratio'),
+      get('/api/v1/admin/model-health'),
+    ]);
+
+    if (sumR.value) {
+      const s = sumR.value;
+      document.getElementById('admin-stats').innerHTML = `
+        <div class="stat"><div class="stat-label">Active Workers</div><div class="stat-val" style="color:var(--accent)">${s.active_workers??'—'}</div><div class="stat-sub">Currently insured</div></div>
+        <div class="stat"><div class="stat-label">Active Triggers</div><div class="stat-val" style="color:var(--orange)">${s.active_triggers??0}</div><div class="stat-sub">Live disruptions</div></div>
+        <div class="stat"><div class="stat-label">Claims This Week</div><div class="stat-val">${s.claims_this_week??0}</div><div class="stat-sub">Auto-processed</div></div>
+        <div class="stat"><div class="stat-label">Payouts This Week</div><div class="stat-val" style="color:var(--green)">${inr(s.payouts_this_week||0)}</div><div class="stat-sub">Disbursed via UPI</div></div>`;
+    }
+
+    if (enrR.value) {
+      const e = enrR.value;
+      document.getElementById('enroll-rows').innerHTML = `
+        <div class="row"><span class="row-label">Total Enrolled</span><span style="font-weight:700">${e.total_enrolled}</span></div>
+        <div class="row"><span class="row-label">New (Last 7 Days)</span><span style="font-weight:600;color:var(--accent)">+${e.enrollments_last_7d}</span></div>
+        <div class="row"><span class="row-label">Lapse Rate</span><span style="color:${(e.lapse_rate||0)>.15?'var(--red)':'var(--green)'}; font-weight:600">${e.lapse_rate!=null?pct(e.lapse_rate):'0%'}</span></div>
+        <div class="row"><span class="row-label">Enrollment Spike</span><span class="chip ${e.enrollment_spike_alert?'chip-r':'chip-g'}">${e.enrollment_spike_alert?'Spike Detected':'Normal'}</span></div>
+        <div class="row"><span class="row-label">Adverse Selection</span><span class="chip ${e.adverse_selection_alert?'chip-o':'chip-g'}">${e.adverse_selection_alert?'Alert':'Clear'}</span></div>`;
+    }
+
+    if (lrR.value) {
+      const items = lrR.value?.items || [];
+      document.getElementById('loss-body').innerHTML = items.length
+        ? '<table class="tbl"><thead><tr><th>Zone</th><th>Premiums</th><th>Payouts</th><th>Ratio</th></tr></thead><tbody>' +
+          items.map(r=>`<tr>
+            <td>Zone ${r.zone_cluster_id}</td>
+            <td>${inr(r.total_premium_collected??r.total_premiums??0)}</td>
+            <td>${inr(r.total_payout_amount??r.total_payouts??0)}</td>
+            <td style="font-weight:700;color:${(r.loss_ratio_percent??r.loss_ratio??0)>80?'var(--red)':'var(--green)'}">${parseFloat(r.loss_ratio_percent??r.loss_ratio??0).toFixed(1)}%</td>
+          </tr>`).join('') + '</tbody></table>'
+        : '<div class="empty">No payout data yet — declare a disruption to generate loss data</div>';
+    }
+
+    if (mhR.value) {
+      const m = mhR.value;
+      document.getElementById('model-rows').innerHTML = `
+        <div class="row"><span class="row-label">Premium RMSE</span><span style="font-weight:600">${m.premium_model_rmse!=null?'₹'+parseFloat(m.premium_model_rmse).toFixed(2):'—'}</span></div>
+        <div class="row"><span class="row-label">Fraud Precision</span><span style="font-weight:600;color:var(--green)">${m.fraud_precision!=null?pct(m.fraud_precision):'—'}</span></div>
+        <div class="row"><span class="row-label">Slab Config</span><span class="chip ${m.slab_config_stale?'chip-r':'chip-g'}">${m.slab_config_stale?'Stale':'Current'}</span></div>
+        <div class="row"><span class="row-label">Premium Drift</span><span class="chip ${m.baseline_drift_alert?'chip-o':'chip-g'}">${m.baseline_drift_alert?'Drift Detected':'Stable'}</span></div>`;
+    }
+  } catch(e) { console.error('loadAdmin:', e); }
+}
+
+// ──────────────────────── INIT ────────────────────────────────
+checkHealth();
+setInterval(checkHealth, 30000);
+loadAllWorkers().then(() => loadCoverage());
+</script>
+</body>
+</html>
