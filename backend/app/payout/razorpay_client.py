@@ -62,7 +62,7 @@ def _mock_payout_response(vpa: str, amount_rupees: float, claim_id: str) -> dict
     return {
         "success": True,
         "payout_id": mock_id,
-        "status": "processing",
+        "status": "paid",
         "mock": True,
     }
 

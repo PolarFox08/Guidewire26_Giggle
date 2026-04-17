@@ -749,7 +749,7 @@ async function loadAdmin() {
     }
 
     if (lrR.value) {
-      const items = lrR.value?.items || [];
+      const items = Array.isArray(lrR.value) ? lrR.value : (lrR.value?.items || []);
       document.getElementById('loss-body').innerHTML = items.length
         ? '<table class="tbl"><thead><tr><th>Zone</th><th>Premiums</th><th>Payouts</th><th>Ratio</th></tr></thead><tbody>' +
           items.map(r=>`<tr>
