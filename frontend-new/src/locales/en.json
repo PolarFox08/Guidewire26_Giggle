@@ -1,5 +1,5 @@
 {
-  "nav": { "coverage":"Coverage","workers":"Workers","triggers":"Triggers & Payouts","fraud":"Fraud Engine","admin":"Admin","logout":"Logout","demo":"Demo","predictor":"Predictor","claims":"Claims","payouts":"Payouts","profile":"My Profile","dashboard":"Dashboard","premium_history":"Premium History" },
+  "nav": { "coverage":"Coverage","workers":"Workers","triggers":"Triggers & Payouts","admin":"Admin","logout":"Logout","predictor":"Predictor","claims":"Claims","payouts":"Payouts","profile":"My Profile","dashboard":"Dashboard","premium_history":"Premium History" },
   "dashboard": { "weekly_premium":"Weekly Premium","coverage_week":"Coverage Week","active_policies":"Active Policies","live_disruptions":"Live Disruptions","claims_this_week":"Claims This Week","payouts_this_week":"Payouts This Week","upi_mandate":"UPI Mandate Coverage", "price_factors": "Why your price changed" },
   "predictor": {
     "title": "Payout Predictor",

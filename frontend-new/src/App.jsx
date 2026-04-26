@@ -3,8 +3,6 @@ import Landing   from './pages/Landing'
 import Login     from './pages/Login'
 import Register  from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import Demo      from './pages/Demo'
-import Fraud     from './pages/Fraud'
 import Admin     from './pages/Admin'
 import Profile   from './pages/Profile'
 import { getAuth, isAdmin } from './hooks/useAuth'
@@ -23,8 +21,6 @@ export default function App() {
       <Route path="/login"    element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-      <Route path="/demo"      element={<RequireAuth><Demo /></RequireAuth>} />
-      <Route path="/fraud"     element={<RequireAuth><Fraud /></RequireAuth>} />
       <Route path="/profile"   element={<RequireAuth><Profile /></RequireAuth>} />
       <Route path="/admin"     element={<RequireAdmin><Admin /></RequireAdmin>} />
       <Route path="*"          element={<Navigate to="/" replace />} />

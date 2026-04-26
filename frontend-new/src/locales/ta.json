@@ -1,5 +1,5 @@
 {
-  "nav": { "coverage":"காப்பீடு","workers":"தொழிலாளர்கள்","triggers":"தூண்டுதல் & கொடுப்பனவு","fraud":"மோசடி இயந்திரம்","admin":"நிர்வாகம்","logout":"வெளியேறு","demo":"டெமோ","predictor":"கணிப்பாளர்","claims":"கோரிக்கைகள்","payouts":"கொடுப்பனவுகள்","profile":"எனது சுயவிவரம்","dashboard":"டேஷ்போர்டு","premium_history":"பிரீமியம் வரலாறு" },
+  "nav": { "coverage":"காப்பீடு","workers":"தொழிலாளர்கள்","triggers":"தூண்டுதல் & கொடுப்பனவு","admin":"நிர்வாகம்","logout":"வெளியேறு","predictor":"கணிப்பாளர்","claims":"கோரிக்கைகள்","payouts":"கொடுப்பனவுகள்","profile":"எனது சுயவிவரம்","dashboard":"டேஷ்போர்டு","premium_history":"பிரீமியம் வரலாறு" },
   "dashboard": { "weekly_premium":"வாராந்திர பிரீமியம்","coverage_week":"காப்பீட்டு வாரம்","active_policies":"செயலில் உள்ள பாலிசிகள்","live_disruptions":"நேரடி இடையூறுகள்","claims_this_week":"இந்த வார கோரிக்கைகள்","payouts_this_week":"இந்த வார கொடுப்பனவுகள்","upi_mandate":"UPI ஆணை காப்பீடு", "price_factors": "உங்கள் விலை ஏன் மாறியது" },
   "predictor": {
     "title": "கொடுப்பனவு கணிப்பாளர்",

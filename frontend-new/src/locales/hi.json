@@ -1,5 +1,5 @@
 {
-  "nav": { "coverage":"कवरेज","workers":"कर्मचारी","triggers":"ट्रिगर और भुगतान","fraud":"धोखाधड़ी इंजन","admin":"व्यवस्थापक","logout":"लॉगआउट","demo":"डेमो","predictor":"भविष्यवक्ता","claims":"दावे","payouts":"भुगतान","profile":"मेरी प्रोफाइल","dashboard":"डैशबोर्ड","premium_history":"प्रीमियम इतिहास" },
+  "nav": { "coverage":"कवरेज","workers":"कर्मचारी","triggers":"ट्रिगर और भुगतान","admin":"व्यवस्थापक","logout":"लॉगआउट","predictor":"भविष्यवक्ता","claims":"दावे","payouts":"भुगतान","profile":"मेरी प्रोफाइल","dashboard":"डैशबोर्ड","premium_history":"प्रीमियम इतिहास" },
   "dashboard": { "weekly_premium":"साप्ताहिक प्रीमियम","coverage_week":"कवरेज सप्ताह","active_policies":"सक्रिय पॉलिसी","live_disruptions":"लाइव व्यवधान","claims_this_week":"इस सप्ताह दावे","payouts_this_week":"इस सप्ताह भुगतान","upi_mandate":"UPI मैंडेट कवरेज", "price_factors": "आपकी कीमत क्यों बदली" },
   "predictor": {
     "title": "भुगतान भविष्यवक्ता",
