@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../node_modules/react-i18next'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { api } from '../config/api'
 import { getAuth } from '../hooks/useAuth'
 
 const ZONE_NAMES = {
-  1:'North Chennai', 2:'Perambur', 3:'T. Nagar', 4:'Anna Nagar',
-  5:'Adyar', 6:'Kodambakkam', 7:'Velachery', 8:'Mylapore',
-  9:'Tambaram', 10:'Porur', 11:'Chromepet', 12:'Ambattur',
+  1: 'North Chennai', 2: 'Perambur', 3: 'T. Nagar', 4: 'Anna Nagar',
+  5: 'Adyar', 6: 'Kodambakkam', 7: 'Velachery', 8: 'Mylapore',
+  9: 'Tambaram', 10: 'Porur', 11: 'Chromepet', 12: 'Ambattur',
 }
 
 const TIER_COLOR = { high: 'text-red-600 bg-red-50', medium: 'text-amber-600 bg-amber-50', low: 'text-green-600 bg-green-50' }
@@ -47,7 +47,7 @@ export default function Profile() {
           pincode: String(r.data.pincode || ''),
         })
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false))
   }, [wid])
 
@@ -111,9 +111,8 @@ export default function Profile() {
                 <span className="text-xs bg-white/15 px-2.5 py-1 rounded-full font-medium">
                   {profile.zone_name || `Zone ${profile.zone_cluster_id}`}
                 </span>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  profile.is_active ? 'bg-green-400/20 text-green-200' : 'bg-red-400/20 text-red-200'
-                }`}>
+                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${profile.is_active ? 'bg-green-400/20 text-green-200' : 'bg-red-400/20 text-red-200'
+                  }`}>
                   {profile.is_active ? '● Active' : '● Inactive'}
                 </span>
               </div>
@@ -131,11 +130,10 @@ export default function Profile() {
 
         {/* Save message */}
         {saveMsg && (
-          <div className={`mb-4 px-4 py-3 rounded-xl text-sm font-medium fade-up border ${
-            saveMsg.type === 'success'
+          <div className={`mb-4 px-4 py-3 rounded-xl text-sm font-medium fade-up border ${saveMsg.type === 'success'
               ? 'bg-green-50 border-green-200 text-green-800'
               : 'bg-red-50 border-red-200 text-red-800'
-          }`}>
+            }`}>
             {saveMsg.text}
           </div>
         )}
@@ -225,9 +223,8 @@ export default function Profile() {
               </InfoRow>
               <InfoRow label="Pincode" value={String(profile.pincode)} />
               <InfoRow label="Mandate Status">
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                  profile.upi_mandate_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                }`}>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${profile.upi_mandate_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                  }`}>
                   {profile.upi_mandate_active ? '● Mandate Active' : '● Not Activated'}
                 </span>
               </InfoRow>

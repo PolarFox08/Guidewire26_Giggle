@@ -108,7 +108,7 @@ def get_dashboard_summary(
             (
                 SELECT COUNT(*)
                 FROM trigger_events te
-                WHERE te.status IN ('active', 'recovering')
+                WHERE te.triggered_at >= (NOW() AT TIME ZONE 'UTC' - INTERVAL '24 hours')
             ) AS active_triggers,
             (
                 SELECT COUNT(*)

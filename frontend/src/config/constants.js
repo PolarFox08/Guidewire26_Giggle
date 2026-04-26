@@ -37,6 +37,7 @@ export const STATUS_DISPLAY = {
 
 export const ROUTING_DISPLAY = {
   auto_approve: { en: 'Auto-Approved', ta: 'தானியங்கி அங்கீகாரம்', hi: 'ऑटो-अनुमोदित' },
+  auto_reject: { en: 'Auto-Rejected', ta: 'தானியங்கி நிராகரிப்பு', hi: 'ऑटो-अस्वीकृत' },
   partial_review: { en: 'Partial Release', ta: 'பகுதி வெளியீடு', hi: 'आंशिक रिलीज' },
   hold: { en: 'Under Review', ta: 'பரிசீலனையில்', hi: 'समीक्षाधीन' },
 }

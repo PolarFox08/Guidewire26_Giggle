@@ -20,7 +20,7 @@ dist-ssr/
 .env.local
 .env.*.local
 backend/.env
-frontend-new/.env
+frontend/.env
 !backend/.env.example
 
 # Logs
@@ -46,3 +46,6 @@ Thumbs.db
 # *.joblib
 # *.pt
 # *.pkl
+
+# Scratch scripts
+backend/scratch/

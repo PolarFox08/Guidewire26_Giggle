@@ -218,7 +218,7 @@ export default function Admin() {
                       <span className="ml-1 text-gray-600 normal-case font-normal">≥64.5 triggers</span>
                     </label>
                     <input
-                      type="number" min="0" step="5"
+                      type="number" min="0" step="0.1"
                       value={simRain} onChange={e => setSimRain(+e.target.value)}
                       className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-primary-500"
                     />
