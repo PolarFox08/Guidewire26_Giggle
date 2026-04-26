@@ -138,7 +138,7 @@ export default function Register() {
             <input className="input-field mb-3" value={phone} onChange={e => setPhone(e.target.value)} placeholder="9876543210" />
             <label className="label">OTP</label>
             <input className="input-field mb-2" value={otp} onChange={e => setOtp(e.target.value)} placeholder="123456" maxLength={6} />
-            <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg mb-4">🔓 Demo mode — any 6-digit OTP accepted</p>
+            <p className="text-xs text-primary-700 bg-primary-50 px-3 py-2 rounded-lg mb-4">🔓 Demo mode — any 6-digit OTP accepted</p>
             {err && <p className="text-red-500 text-sm mb-3">{err}</p>}
             <button type="submit" className="btn-primary w-full">Continue</button>
           </form>
@@ -206,7 +206,7 @@ export default function Register() {
                   Skip for now
                 </button>
               </div>
-              {!mandateApproved && <p className="text-xs text-amber-600 mt-2">⚠ Manual payment required without mandate</p>}
+              {!mandateApproved && <p className="text-xs text-primary-700 mt-2">⚠ Manual payment required without mandate</p>}
             </div>
 
             {err && <p className="text-red-500 text-sm mb-3">{err}</p>}
@@ -271,6 +271,11 @@ export default function Register() {
             </div>
             <button className="btn-primary w-full" onClick={() => nav('/dashboard')}>Go to Dashboard</button>
           </div>
+        )}
+        {step < 4 && (
+          <p className="text-center text-sm text-gray-500 mt-8">
+            Already have an account? <Link to="/login" className="text-primary-700 font-medium hover:underline">Sign In here</Link>
+          </p>
         )}
       </div>
     </div>

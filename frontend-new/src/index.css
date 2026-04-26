@@ -23,7 +23,7 @@ h1,h2,h3,.font-heading { font-family: 'Sora', sans-serif; }
 .card-dark { @apply bg-primary-900 text-white rounded-2xl p-6; }
 
 .btn-primary {
-  @apply bg-accent-500 hover:bg-accent-600 text-white font-semibold
+  @apply bg-primary-500 hover:bg-primary-700 text-white font-semibold
          px-6 py-3 rounded-xl transition-all duration-150
          hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
 }
