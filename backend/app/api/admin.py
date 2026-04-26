@@ -143,8 +143,8 @@ def get_dashboard_summary(
         """
     )
     mandate_row = db.execute(mandate_sql).mappings().one()
-    total_workers = int(mandate_row["total_workers"] or 0)
-    mandate_active = int(mandate_row["mandate_active"] or 0)
+    total_workers = int(mandate_row.get("total_workers", 0) if hasattr(mandate_row, "get") else (mandate_row["total_workers"] if "total_workers" in mandate_row else 0))
+    mandate_active = int(mandate_row.get("mandate_active", 0) if hasattr(mandate_row, "get") else (mandate_row["mandate_active"] if "mandate_active" in mandate_row else 0))
     upi_mandate_coverage_pct = round((mandate_active / total_workers * 100), 1) if total_workers > 0 else 0.0
 
     return DashboardSummaryResponse(

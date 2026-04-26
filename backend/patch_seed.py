@@ -1,53 +1,11 @@
-"""
-demo_seed.py — Giggle Demo Data Seeder
-=========================================
-Run this ONCE before recording the demo video.
-It creates a realistic Priya worker profile, delivery history,
-and puts her policy in 'active' state past the waiting period.
-
-Usage:
-    cd backend
-    python demo_seed.py
-
-After running, the script prints:
-  - worker_id   (use in /docs to query claims, policy, fraud)
-  - zone cluster (use in /trigger/simulate)
-  - ADMIN_KEY   (use in admin endpoints)
-"""
-
-from __future__ import annotations
-
-import hashlib
 import os
-import sys
-import uuid
-from datetime import datetime, timedelta, timezone
-from decimal import Decimal
+import re
 
-# ── Make sure backend/ is on the Python path ──────────────────────────────────
-sys.path.insert(0, os.path.dirname(__file__))
+with open("demo_seed.py", "r", encoding="utf-8") as f:
+    content = f.read()
 
-# Load .env explicitly BEFORE importing any app module (settings reads .env at import time)
-try:
-    from dotenv import load_dotenv
-    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"), override=True)
-except ImportError:
-    pass  # dotenv not installed — rely on environment variables
-
-os.environ.setdefault("DATABASE_URL", "")  # loaded from .env via settings
-
-from app.core.database import SessionLocal  # noqa: E402
-from app.models.audit import AuditEvent  # noqa: E402
-from app.models.delivery import DeliveryHistory  # noqa: E402
-from app.models.platform_partner import PlatformPartner  # noqa: E402
-from app.models.policy import Policy  # noqa: E402
-from app.models.worker import WorkerProfile  # noqa: E402
-from app.models.zone import ZoneCluster  # noqa: E402
-
-ADMIN_KEY = "gigshield-admin-2026"
-
-# ── Demo worker profile ────────────────────────────────────────────────────────
-
+# Replace the single DEMO variables with a list
+new_data_str = """
 DEMO_WORKERS = [
     {
         "name": "Priya S.",
@@ -98,17 +56,18 @@ DEMO_WORKERS = [
         "week": 9
     }
 ]
+"""
 
+content = re.sub(
+    r"DEMO_AADHAAR =.*?DEMO_PINCODE = 600042.*?\n",
+    new_data_str,
+    content,
+    flags=re.DOTALL
+)
 
-def sha256(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
-
-
-
-
-
-def ensure_zones(db) -> None:
-    """Ensure the specific zones needed for demo workers exist."""
+# Update find_or_create_zone
+new_zone_func = """def ensure_zones(db) -> None:
+    \"\"\"Ensure the specific zones needed for demo workers exist.\"\"\"
     required_zones = {
         4: {"name": "Anna Nagar", "tier": 2, "lat": 13.0850, "lon": 80.2101},
         7: {"name": "Velachery", "tier": 3, "lat": 12.9816, "lon": 80.2180},
@@ -128,11 +87,18 @@ def ensure_zones(db) -> None:
                 zone_rate_max=Decimal("25.00"),
             ))
             print(f"  [OK] Created zone {zid} ({data['name']})")
-    db.commit()
+    db.commit()"""
 
+content = re.sub(
+    r"def find_or_create_zone.*?return 1",
+    new_zone_func,
+    content,
+    flags=re.DOTALL
+)
 
-def seed_worker(db, data: dict) -> WorkerProfile:
-    """Create or return a demo worker."""
+# Replace seed_worker
+new_seed_worker = """def seed_worker(db, data: dict) -> WorkerProfile:
+    \"\"\"Create or return a demo worker.\"\"\"
     aadhaar_hash = sha256(data["aadhaar"])
     existing = db.query(WorkerProfile).filter_by(aadhaar_hash=aadhaar_hash).first()
     if existing:
@@ -178,11 +144,18 @@ def seed_worker(db, data: dict) -> WorkerProfile:
     ))
     db.commit()
     print(f"  [OK] Created demo worker ({data['name']}): {worker.id}")
-    return worker
+    return worker"""
 
+content = re.sub(
+    r"def seed_worker\(db.*?return worker",
+    new_seed_worker,
+    content,
+    flags=re.DOTALL
+)
 
-def seed_policy(db, worker: WorkerProfile, data: dict) -> Policy:
-    """Create or ensure the demo worker has an ACTIVE policy."""
+# Fix seed_policy
+new_seed_policy = """def seed_policy(db, worker: WorkerProfile, data: dict) -> Policy:
+    \"\"\"Create or ensure the demo worker has an ACTIVE policy.\"\"\"
     existing = db.query(Policy).filter_by(worker_id=worker.id).first()
     if existing:
         if existing.status != "active":
@@ -212,11 +185,18 @@ def seed_policy(db, worker: WorkerProfile, data: dict) -> Policy:
     db.add(policy)
     db.commit()
     print(f"  [OK] Created active policy: {policy.id}")
-    return policy
+    return policy"""
 
+content = re.sub(
+    r"def seed_policy\(db.*?return policy",
+    new_seed_policy,
+    content,
+    flags=re.DOTALL
+)
 
-def seed_delivery_history(db, worker: WorkerProfile, data: dict) -> None:
-    """Seed 30 days of realistic delivery history."""
+# Fix seed_delivery_history
+new_seed_delivery = """def seed_delivery_history(db, worker: WorkerProfile, data: dict) -> None:
+    \"\"\"Seed 30 days of realistic delivery history.\"\"\"
     existing_count = db.query(DeliveryHistory).filter_by(worker_id=worker.id).count()
     if existing_count > 0:
         print(f"  [OK] Delivery history already exists ({existing_count} records)")
@@ -269,15 +249,22 @@ def seed_delivery_history(db, worker: WorkerProfile, data: dict) -> None:
         records_added += 2
 
     db.commit()
-    print(f"  [OK] Seeded {records_added} delivery history records")
+    print(f"  [OK] Seeded {records_added} delivery history records")"""
 
+content = re.sub(
+    r"def seed_delivery_history\(db.*?print\(f\"  \[OK\] Seeded \{records_added\} delivery history records \(30 days, Velachery GPS\)\"\)",
+    new_seed_delivery,
+    content,
+    flags=re.DOTALL
+)
 
+# Remove the old seed_platform_partner and seed_extra_workers
+content = re.sub(r"def seed_platform_partner\(db\).*?print\(f\"  ! Warning: Platform partner seed skipped/failed: \{e\}\"\)", "", content, flags=re.DOTALL)
+content = re.sub(r"def seed_extra_workers\(db.*?return created", "", content, flags=re.DOTALL)
 
-
-
-def main() -> None:
-    print("
-" + "=" * 60)
+# Update main
+new_main = """def main() -> None:
+    print("\\n" + "=" * 60)
     print("  GIGGLE PLATFORM SEED")
     print("=" * 60)
 
@@ -286,38 +273,34 @@ def main() -> None:
     import app.models.payout, app.models.platform_partner, app.models.policy  # noqa: F401
     import app.models.trigger, app.models.worker, app.models.zone  # noqa: F401
 
-    print("
-[0/4] Initializing database schema...")
+    print("\\n[0/4] Initializing database schema...")
     DeclarativeBase.metadata.create_all(bind=engine)
     print("      [OK] Schema ready")
 
     db = SessionLocal()
     try:
-        print("
-[1/4] Ensuring Zones...")
+        print("\\n[1/4] Ensuring Zones...")
         ensure_zones(db)
 
-        print("
-[2/4] Creating Workers...")
+        print("\\n[2/4] Creating Workers...")
         for w_data in DEMO_WORKERS:
             worker = seed_worker(db, w_data)
             seed_policy(db, worker, w_data)
             seed_delivery_history(db, worker, w_data)
 
-        print("
-[3/4] Commit & Verification...")
+        print("\\n[3/4] Commit & Verification...")
         db.commit()
         
     finally:
         db.close()
 
-    print("
-" + "=" * 60)
+    print("\\n" + "=" * 60)
     print("  PLATFORM SEEDED")
     print("=" * 60)
     print(f"  Admin Key          : {ADMIN_KEY}")
-    print()
+    print()"""
 
+content = re.sub(r"def main\(\) -> None:.*?print\(\)", new_main, content, flags=re.DOTALL)
 
-if __name__ == "__main__":
-    main()
+with open("demo_seed.py", "w", encoding="utf-8") as f:
+    f.write(content)

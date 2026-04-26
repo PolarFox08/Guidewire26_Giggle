@@ -140,12 +140,14 @@ def test_dashboard_summary_returns_expected_fields_and_types(monkeypatch):
         "claims_this_week",
         "payouts_this_week",
         "avg_fraud_score_this_week",
+        "upi_mandate_coverage_pct",
     }
     assert isinstance(body["active_workers"], int)
     assert isinstance(body["active_triggers"], int)
     assert isinstance(body["claims_this_week"], int)
     assert isinstance(body["payouts_this_week"], float)
     assert isinstance(body["avg_fraud_score_this_week"], float)
+    assert isinstance(body["upi_mandate_coverage_pct"], float)
 
 
 def test_loss_ratio_without_admin_key_returns_403(monkeypatch):
