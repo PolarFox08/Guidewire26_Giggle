@@ -46,7 +46,7 @@ export default function Landing() {
   const events = activeTriggers.length > 0
     ? activeTriggers.map(t => ({
         zone: ZONE_NAMES[t.zone_cluster_id] || `Zone ${t.zone_cluster_id}`,
-        event: `${t.trigger_type?.replace(/_/g, ' ')} detected`,
+        event: `${t.trigger_type?.replace(/_/g, ' ').replace(/\baqi\b/gi, 'AQI').replace(/\b\w/g, l => l.toUpperCase())} detected`,
         payout: t.composite_score > 0.9 ? '✓ Fast Path' : '⏳ Scoring',
         time: ago(t.triggered_at),
         color: t.trigger_type?.includes('rain') ? 'bg-blue-500' : 'bg-amber-500'

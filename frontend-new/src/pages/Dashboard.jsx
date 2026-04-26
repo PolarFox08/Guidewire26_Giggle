@@ -251,7 +251,7 @@ export default function Dashboard() {
                         <td className="py-3 pr-4 font-mono text-xs text-gray-500">{String(c.claim_id || c.id).slice(-8).toUpperCase()}</td>
                         <td className="py-3 pr-4 font-bold">{inr(c.total_payout_amount)}</td>
                         <td className={`py-3 pr-4 font-bold ${col}`}>{(sc * 100).toFixed(0)}%</td>
-                        <td className="py-3 pr-4"><span className="badge badge-waiting text-xs">{c.fraud_routing}</span></td>
+                        <td className="py-3 pr-4"><span className="badge badge-waiting text-xs">{ROUTING_DISPLAY[c.fraud_routing]?.en || c.fraud_routing}</span></td>
                         <td className="py-3 pr-4"><span className={`badge ${badgeClass(c.status)}`}>{STATUS_DISPLAY[c.status]?.en || c.status}</span></td>
                         <td className="py-3 text-gray-400">{ago(c.claim_date)}</td>
                       </tr>
