@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recha
 import Layout from '../components/Layout'
 import { api } from '../config/api'
 import { getAuth } from '../hooks/useAuth'
-import { ZONE_NAMES, STATUS_DISPLAY, TIER_DISPLAY, TRIGGER_DISPLAY } from '../config/constants'
+import { ZONE_NAMES, STATUS_DISPLAY, TIER_DISPLAY, TRIGGER_DISPLAY, ROUTING_DISPLAY } from '../config/constants'
 
 function inr(v) { return `₹${parseFloat(v || 0).toFixed(2)}` }
 function ago(dt) {
@@ -20,9 +20,11 @@ function ago(dt) {
   return utcDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })
 }
 function badgeClass(status) {
-  return { active:'badge-active',approved:'badge-approved',paid:'badge-paid',
-    waiting:'badge-waiting',partial:'badge-partial',held:'badge-held',
-    suspended:'badge-suspended',lapsed:'badge-lapsed',failed:'badge-failed' }[status] || 'badge-waiting'
+  return {
+    active: 'badge-active', approved: 'badge-approved', paid: 'badge-paid',
+    waiting: 'badge-waiting', partial: 'badge-partial', held: 'badge-held',
+    suspended: 'badge-suspended', lapsed: 'badge-lapsed', failed: 'badge-failed'
+  }[status] || 'badge-waiting'
 }
 
 export default function Dashboard() {
@@ -38,7 +40,7 @@ export default function Dashboard() {
   const [activeTriggers, setActiveTriggers] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('policy')
-  
+
   const [predDeliveries, setPredDeliveries] = useState(10)
   const [predHours, setPredHours] = useState(4)
   const [predType, setPredType] = useState('heavy_rain')
@@ -99,13 +101,13 @@ export default function Dashboard() {
   const translateShap = (str) => {
     if (i18n.language === 'en') {
       return str.replace('உங்கள் மண்டலத்தில் மழை முன்னறிவிப்பு', 'Rain forecast in your zone')
-                .replace('வெள்ள அபாய மண்டலம்', 'Flood hazard zone')
-                .replace('5 வார சுத்தமான பதிவு', '5 weeks clean record')
+        .replace('வெள்ள அபாய மண்டலம்', 'Flood hazard zone')
+        .replace('5 வார சுத்தமான பதிவு', '5 weeks clean record')
     }
     if (i18n.language === 'hi') {
       return str.replace('உங்கள் மண்டலத்தில் மழை முன்னறிவிப்பு', 'आपके क्षेत्र में बारिश का पूर्वानुमान')
-                .replace('வெள்ள அபாய மண்டலம்', 'बाढ़ खतरा क्षेत्र')
-                .replace('5 வார சுத்தமான பதிவு', '5 सप्ताह का स्वच्छ रिकॉर्ड')
+        .replace('வெள்ள அபாய மண்டலம்', 'बाढ़ खतरा क्षेत्र')
+        .replace('5 வார சுத்தமான பதிவு', '5 सप्ताह का स्वच्छ रिकॉर्ड')
     }
     return str
   }
@@ -117,7 +119,7 @@ export default function Dashboard() {
       {/* Welcome Header */}
       <div className="mb-8 fade-up">
         <h1 className="text-3xl font-bold text-primary-900 font-heading">
-          {t('common.welcome', 'Welcome back,')} {workerName} 👋
+          {t('common.welcome', 'Welcome back,')} {workerName}
         </h1>
         <p className="text-gray-500 mt-1">Here is your Giggle coverage and community overview.</p>
       </div>
@@ -164,9 +166,8 @@ export default function Dashboard() {
           ['predictor', t('nav.predictor', 'Payout Predictor')],
         ].map(([id, label]) => (
           <button key={id} onClick={() => setTab(id)}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
-              tab === id ? 'bg-primary-900 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-            }`}>
+            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${tab === id ? 'bg-primary-900 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+              }`}>
             {label}
           </button>
         ))}
@@ -307,7 +308,7 @@ export default function Dashboard() {
                 <XAxis dataKey="week_number" tickFormatter={w => `W${w}`} tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <Tooltip formatter={(v) => [`₹${v}`, 'Premium']} />
-                <Bar dataKey="premium_amount" fill="#7DAE8A" radius={[4,4,0,0]} />
+                <Bar dataKey="premium_amount" fill="#7DAE8A" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -319,7 +320,7 @@ export default function Dashboard() {
         <div className="card fade-up">
           <h2 className="font-heading font-semibold text-primary-900 mb-2">{t('predictor.title', 'Payout Predictor')}</h2>
           <p className="text-sm text-gray-500 mb-6">{t('predictor.desc', 'Estimate your potential payout for a hypothetical disruption event based on your real performance history.')}</p>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <form onSubmit={(e) => { e.preventDefault(); handlePredict() }} className="space-y-4">
               <div>
@@ -330,7 +331,7 @@ export default function Dashboard() {
                   <option value="platform_suspension">{t('predictor.event_outage', 'Platform Suspension')}</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">{t('predictor.label_deliveries', 'Deliveries Completed Today')}</label>
                 <input type="number" min="0" value={predDeliveries} onChange={e => setPredDeliveries(Number(e.target.value))} className="w-full border-gray-300 rounded-xl p-2.5 text-sm bg-gray-50" />
