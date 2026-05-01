@@ -17,9 +17,10 @@
 | 🎥 Phase 1 Video | [Watch on YouTube/Drive](https://youtu.be/Cym08VIJqjM?si=JFqiiSrCJ86C7UE4) |
 | 🎥 Phase 3 Video | [Watch on YouTube/Drive](https://youtu.be/Cym08VIJqjM?si=JFqiiSrCJ86C7UE4) |
 | 📊 Final Pitch Deck | [View on Google Slides](https://docs.google.com/presentation/d/1qn5IUIiTm2DbUQ9SqbRwwwnpnb5uIV69/edit?usp=sharing) |
-| 🌐 Live Demo (Frontend) | [giggle26.vercel.app](https://giggle26.vercel.app/) |
-| ⚙️ Live API | [giggle-q6pe.onrender.com/docs](https://giggle-q6pe.onrender.com/docs) |
-| 💻 Repository | [github.com/PolarFox08/Guidewire26_Giggle](https://github.com/PolarFox08/Guidewire26_Giggle) |
+| 🌐 Live Demo (Frontend) | [View Live Demo](https://giggle26.vercel.app/) |
+| ⚙️ Live API | [View Live API](https://giggle-q6pe.onrender.com/docs) |
+| 💻 Original Repository | [View Original Repository](https://github.com/Hemachandhar-A/Giggle) |
+| 💻 Forking Repository | [View Forking Repository](https://github.com/PolarFox08/Guidewire26_Giggle) |
 
 ---
 
