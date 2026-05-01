@@ -17,9 +17,9 @@
 | 🎥 Phase 1 Video | [Watch on YouTube/Drive](https://youtu.be/Cym08VIJqjM?si=JFqiiSrCJ86C7UE4) |
 | 🎥 Phase 3 Video | [Watch on YouTube/Drive](https://youtu.be/Cym08VIJqjM?si=JFqiiSrCJ86C7UE4) |
 | 📊 Final Pitch Deck | [View on Google Slides](https://docs.google.com/presentation/d/1qn5IUIiTm2DbUQ9SqbRwwwnpnb5uIV69/edit?usp=sharing) |
-| 🌐 Live Demo (Frontend) | [giggle.vercel.app](#) |
-| ⚙️ Live API | [giggle-api.onrender.com/docs](#) |
-| 💻 Repository | [github.com/Hemachandhar-A/Giggle](https://github.com/Hemachandhar-A/Giggle) |
+| 🌐 Live Demo (Frontend) | [giggle26.vercel.app](https://giggle26.vercel.app/) |
+| ⚙️ Live API | [giggle-q6pe.onrender.com/docs](https://giggle-q6pe.onrender.com/docs) |
+| 💻 Repository | [github.com/PolarFox08/Guidewire26_Giggle](https://github.com/PolarFox08/Guidewire26_Giggle) |
 
 ---
 
@@ -543,7 +543,7 @@ npm install -g vercel
 vercel --prod
 
 # Set environment variable in Vercel dashboard:
-# VITE_API_BASE_URL = https://your-render-url.onrender.com
+# VITE_API_BASE_URL = https://giggle-q6pe.onrender.com
 ```
 
 Or connect your GitHub repo to Vercel directly for automatic deploys on push to `main`.
