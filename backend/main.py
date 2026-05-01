@@ -121,11 +121,10 @@ def health() -> JSONResponse:
 
 
 @app.get("/", include_in_schema=False)
-def root_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/dashboard")
+def root_info():
+    return {
+        "message": "GigShield API is running",
+        "health_check": "/api/v1/health",
+        "documentation": "/docs"
+    }
 
-
-# ── Serve frontend static files at /dashboard ──────────────────────────────────
-_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
-if os.path.isdir(_frontend_dir):
-    app.mount("/dashboard", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
